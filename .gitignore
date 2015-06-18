@@ -1,3 +1,5 @@
-reports/*/*.aux
-reports/*/*.pdf
-reports/*/*.gz
+# Alex Millward SURE gitignore
+reports/*
+!reports/*/*.tex
+!reports/*/*.bib
+!reports/*/*.log

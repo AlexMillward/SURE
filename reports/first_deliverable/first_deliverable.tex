@@ -1,7 +1,26 @@
 \documentclass[11pt]{article}
-
-\usepackage[margin=1.2in]{geometry}
+\usepackage[backend=bibtex]{biblatex}
+\usepackage[margin=1.3in]{geometry}
+\bibliography{first_deliverable.bib}
 
 \begin{document}
-	\section{XY}
+\section{Agent based economic models}
+Traditional economic models, according to an article by the IMF \cite{imf}, are simplified descriptions of reality that provide hypotheses about economic behaviour that can be tested. In this sense a computational economic model is designed to replicate aspects of an economy or its components, yielding results that can be compared to the outcomes of real world instances of the scenario being modelled. Many computational economic models rely on the application of statistical techniques \cite{estrella98}. Historical information used to adjust the model, allowing for analysis of displayed behaviour, as well as the ability to predict future behaviour in some cases. As with conventional, non-computational economic models, significant generalisations are usually required when making models. According to Farmer and Foley \cite{farmer09} conventional models have to remove much of the structure of a real world economy to produce usable results. This can be addressed using agent based models that model interactions between specific agents that represent individuals or organisations in the economy rather than relationships between specific indicators. Such models allow for the effects of changes in economic conditions on specific agents to be modelled. It is also much more likely that emergent behaviour will occur within an agent based model due to the complex network of interactions that can occur between agents. The predicted effect of a change in economic conditions might be similar to a conventional model, but additional consequences could be analysed such as the impact to specific sectors of industry.
+
+\section{Difficulties of scale}
+Inevitably a complex agent based model requires more computational power than a conventional computational model of an economic scenario. For a smaller model, this could still be achieved on a single computer, using a single processing unit. However for a more complex model it can be beneficial, or even necessary for execution of the desired number of iterations in an acceptable time frame, to distribute execution across many processing units. The behaviour of an agent depends on the behaviour of other agents, and so a method of communication is required. As well as this, one agent can not progress to the next iteration of a computational model before all other agents have completed the current iteration, as behaviour in future iterations depends on the results of the current iteration which can in turn depend on interactions that have not yet been completed. The Flexible Large-scale Agent Modelling Environment (FLAME) \cite{flame} facilitates this. The following methods are used:
+\begin{enumerate}
+	\item Agents can be spread across processing unit, and each agent has its own memory.
+	\item Communication between agents is achieved using messages. All messages exist for a single iteration, and are accessible to all agents at the same time (in terms of model execution). Agents must identify what messages are relevant to them, and react accordingly.
+	\item Once all messages of a given type have been sent they can be read by agents, and not before so the agent knows when interaction through a specific message type is complete and no agent has priority in reading messages.
+\end{enumerate}
+This differs significantly from a more simple modelling environment such as NetLogo \cite{netlogo} where interactions between specific agents can be easily defined, rather than broadcasting messages to all agents and allowing them to respond accordingly. Although more complex systems can be built with acceptable execution times, basic interactions such as asking an agent to reveal specific information about itself can require an exchange of messages across multiple iterations. In some cases this can be addressed with design choices, for example agents could broadcast information at every iteration and other agents could simply ignore it until they require it. Alternatively the model could be adjusted so a single unit of time, for example a day, is covered by multiple iterations allowing for exchanges intended to be executed within that unit of time to be completed correctly.
+
+\section{Existing models}
+X
+
+\begin{flushleft}
+\printbibliography
+\end{flushleft}
+
 \end{document}

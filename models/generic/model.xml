@@ -1,0 +1,26 @@
+<xmodel>
+  <environment>
+    <dataTypes>
+    </dataTypes>
+  </environment>
+  <agents>
+    <!-- Firm agent -->
+    <xagent>
+      <name>Firm</name>
+      <memory>
+      </memory>
+      <functions>
+      </functions>
+    </xagent>
+    <!-- Division agent -->
+    <xagent>
+      <name>Division</name>
+      <memory>
+        <!-- Employment variables -->
+        <variable><type>int</type><name>skill_type</name></variable>
+        <variable><type>int</type><name>skill_level</name></variable>
+        <variable><type>int</type><name>employees</name></variable>
+      </memory>
+    </xagent>
+  </agents>
+</xmodel>
