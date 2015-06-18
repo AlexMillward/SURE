@@ -1,0 +1,38 @@
+<states>
+  <itno>0</itno>
+  <agents>
+    <xagent>
+      <name>Division</name>
+      <!-- administrative -->
+      <current_order>{1, 10000}</current_order>
+      <funds>1000000000</funds>
+      <reserved_funds>0</reserved_funds>
+      <stock>0</stock>
+
+      <!-- production -->
+      <dependencies>{}</dependencies>
+      <production_costs_per_unit>5</production_costs_per_unit>
+
+      <!-- personnel -->
+      <employees>5</employees>
+      <quantity_of_capital>8</quantity_of_capital>
+      <output_potential_per_employee>2</output_potential_per_employee>
+      <output_potential_per_capital_unit>1</output_potential_per_capital_unit>
+
+      <!-- output -->
+      <dependency_output_potential>0</dependency_output_potential>
+      <employee_output_potential>0</employee_output_potential>
+      <capital_output_potential>0</capital_output_potential>
+      <funds_output_potential>0</funds_output_potential>
+      <output_potential>0</output_potential>
+      <output>0</output>
+
+      <!-- delivery -->
+      <transport_quantity>0</transport_quantity>
+      <transportable_daily>0</transportable_daily>
+      <x_position>0</x_position>
+      <y_position>0</y_position>
+
+    </xagent>
+  </agents>
+</states>

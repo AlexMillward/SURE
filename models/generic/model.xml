@@ -1,26 +1,80 @@
-<xmodel>
+<xmodel version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation='http://flame.ac.uk/schema/xmml_v2.xsd'>
+  <name>Basic model</name>
+  <version>1</version>
   <environment>
+    <functionFiles>
+      <file>Division_functions.c</file>
+    </functionFiles>
     <dataTypes>
+      <!-- production dependency -->
+      <dataType>
+        <name>dependency</name>
+        <variables>
+          <variable><type>int</type><name>stock</name></variable>
+          <variable><type>int</type><name>required_per_unit</name></variable>
+        </variables>
+      </dataType>
+      <!-- order wrapper -->
+      <dataType>
+        <name>order</name>
+        <variables>
+          <variable><type>int</type><name>buyer</name></variable>
+          <variable><type>int</type><name>quantity</name></variable>
+        </variables>
+      </dataType>
     </dataTypes>
   </environment>
   <agents>
-    <!-- Firm agent -->
-    <xagent>
-      <name>Firm</name>
-      <memory>
-      </memory>
-      <functions>
-      </functions>
-    </xagent>
     <!-- Division agent -->
     <xagent>
       <name>Division</name>
+      <description>A division of a firm</description>
       <memory>
-        <!-- Employment variables -->
-        <variable><type>int</type><name>skill_type</name></variable>
-        <variable><type>int</type><name>skill_level</name></variable>
+        <!-- administrative -->
+        <variable><type>order</type><name>current_order</name></variable>
+        <variable><type>double</type><name>funds</name></variable>
+        <variable><type>double</type><name>reserved_funds</name></variable>
+        <variable><type>int</type><name>stock</name></variable>
+
+        <!-- production -->
+        <variable><type>dependency_array</type><name>dependencies</name></variable>
+        <variable><type>double</type><name>production_costs_per_unit</name></variable>
+
+        <!-- assets -->
         <variable><type>int</type><name>employees</name></variable>
+        <variable><type>int</type><name>quantity_of_capital</name></variable>
+        <variable><type>int</type><name>output_potential_per_employee</name></variable>
+        <variable><type>int</type><name>output_potential_per_capital_unit</name></variable>
+
+        <!-- output -->
+        <variable><type>int</type><name>dependency_output_potential</name></variable>
+        <variable><type>int</type><name>employee_output_potential</name></variable>
+        <variable><type>int</type><name>capital_output_potential</name></variable>
+        <variable><type>int</type><name>funds_output_potential</name></variable>
+        <variable><type>int</type><name>output_potential</name></variable>
+        <variable><type>int</type><name>output</name></variable>
+
+        <!-- delivery -->
+        <variable><type>int</type><name>transport_quantity</name></variable>
+        <variable><type>int</type><name>transportable_daily</name></variable>
+        <variable><type>double</type><name>x_position</name></variable>
+        <variable><type>double</type><name>y_position</name></variable>
       </memory>
+      <functions>
+        <function>
+          <name>deliver</name>
+          <currentState>01</currentState>
+          <nextState>02</nextState>
+        </function>
+        <function>
+          <name>produce</name>
+          <currentState>02</currentState>
+          <nextState>03</nextState>
+        </function>
+      </functions>
     </xagent>
   </agents>
+  <messages>
+  </messages>
 </xmodel>

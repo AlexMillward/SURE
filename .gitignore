@@ -1,5 +1,11 @@
 # Alex Millward SURE gitignore
-reports/*
-!reports/*/*.tex
-!reports/*/*.bib
-!reports/*/*.log
+
+*.pdf
+*.gz
+
+models/*/*
+!models/*/its
+models/*/its/*
+!models/*/its/0.xml
+!models/*/*_functions.c
+!models/*/*.xml

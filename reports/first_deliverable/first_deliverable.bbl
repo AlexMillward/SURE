@@ -1,0 +1,137 @@
+% $ biblatex auxiliary file $
+% $ biblatex version 2.5 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\entry{estrella98}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Estrella}{E.}%
+     {Arturo}{A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Mishkin}{M.}%
+     {Frederic~S}{F.~S.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {MIT Press}%
+  }
+  \strng{namehash}{EAMFS1}
+  \strng{fullhash}{EAMFS1}
+  \field{sortinit}{E}
+  \field{number}{1}
+  \field{pages}{45\bibrangedash 61}
+  \field{title}{Predicting US recessions: Financial variables as leading
+  indicators}
+  \field{volume}{80}
+  \field{journaltitle}{Review of Economics and Statistics}
+  \field{year}{1998}
+\endentry
+
+\entry{farmer09}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Farmer}{F.}%
+     {J~Doyne}{J.~D.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Foley}{F.}%
+     {Duncan}{D.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {Nature Publishing Group}%
+  }
+  \strng{namehash}{FJDFD1}
+  \strng{fullhash}{FJDFD1}
+  \field{sortinit}{F}
+  \field{number}{7256}
+  \field{pages}{685\bibrangedash 686}
+  \field{title}{The economy needs agent-based modelling}
+  \field{volume}{460}
+  \field{journaltitle}{Nature}
+  \field{year}{2009}
+\endentry
+
+\entry{imf}{online}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Fund}{F.}%
+     {International~Monetary}{I.~M.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{FIM1}
+  \strng{fullhash}{FIM1}
+  \field{sortinit}{F}
+  \field{title}{What Are Economic Models?}
+  \verb{url}
+  \verb http://www.imf.org/external/pubs/ft/fandd/2011/06/basics.htm
+  \endverb
+  \field{urlday}{17}
+  \field{urlmonth}{06}
+  \field{urlyear}{2015}
+\endentry
+
+\entry{flame}{online}{}
+  \name{author}{1}{}{%
+    {{}%
+     {STFC}{S.}%
+     {}{}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{S1}
+  \strng{fullhash}{S1}
+  \field{sortinit}{S}
+  \field{title}{Flexible Large-scale Agent Modelling Environment}
+  \verb{url}
+  \verb http://www.flame.ac.uk
+  \endverb
+  \field{urlday}{17}
+  \field{urlmonth}{06}
+  \field{urlyear}{2015}
+\endentry
+
+\entry{netlogo}{online}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Wilensky}{W.}%
+     {Uri}{U.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{WU1}
+  \strng{fullhash}{WU1}
+  \field{sortinit}{W}
+  \field{title}{NetLogo}
+  \verb{url}
+  \verb http://https://ccl.northwestern.edu/netlogo/
+  \endverb
+  \field{urlday}{17}
+  \field{urlmonth}{06}
+  \field{urlyear}{2015}
+\endentry
+
+\lossort
+\endlossort
+
+\endinput
