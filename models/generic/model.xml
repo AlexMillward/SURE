@@ -6,23 +6,58 @@
     <functionFiles>
       <file>Division_functions.c</file>
     </functionFiles>
+    <timeUnits>
+
+      <timeUnit>
+        <name>daily</name>
+        <unit>iteration</unit>
+        <period>1</period>
+      </timeUnit>
+
+      <timeUnit>
+        <name>weekly</name>
+        <unit>daily</unit>
+        <period>7</period>
+      </timeUnit>
+
+      <timeUnit>
+        <name>monthly</name>
+        <unit>weekly</unit>
+        <period>4</period>
+      </timeUnit>
+
+    </timeUnits>
     <dataTypes>
+
       <!-- production dependency -->
       <dataType>
         <name>dependency</name>
         <variables>
+          <variable><type>int</type><name>good_type</name></variable>
           <variable><type>int</type><name>stock</name></variable>
           <variable><type>int</type><name>required_per_unit</name></variable>
         </variables>
       </dataType>
+
       <!-- order wrapper -->
       <dataType>
         <name>order</name>
         <variables>
-          <variable><type>int</type><name>buyer</name></variable>
+          <variable><type>int</type><name>buyer_id</name></variable>
           <variable><type>int</type><name>quantity</name></variable>
         </variables>
       </dataType>
+
+      <!-- delivery wrapper -->
+      <dataType>
+        <name>delivery</name>
+        <variables>
+          <variable><type>int</type><name>good_type</name></variable>
+          <variable><type>int</type><name>quantity</name></variable>
+          <variable><type>int</type><name>time_remaining</name></variable>
+        </variables>
+      </dataType>
+
     </dataTypes>
   </environment>
   <agents>
@@ -31,6 +66,10 @@
       <name>Division</name>
       <description>A division of a firm</description>
       <memory>
+
+        <!-- identity -->
+        <variable><type>int</type><name>id</name></variable>
+
         <!-- administrative -->
         <variable><type>order</type><name>current_order</name></variable>
         <variable><type>double</type><name>funds</name></variable>
@@ -38,6 +77,7 @@
         <variable><type>int</type><name>stock</name></variable>
 
         <!-- production -->
+        <variable><type>int</type><name>produces_good_of_type</name></variable>
         <variable><type>dependency_array</type><name>dependencies</name></variable>
         <variable><type>double</type><name>production_costs_per_unit</name></variable>
 
@@ -56,25 +96,69 @@
         <variable><type>int</type><name>output</name></variable>
 
         <!-- delivery -->
+        <variable><type>delivery_array</type><name>deliveries</name></variable>
         <variable><type>int</type><name>transport_quantity</name></variable>
         <variable><type>int</type><name>transportable_daily</name></variable>
         <variable><type>double</type><name>x_position</name></variable>
         <variable><type>double</type><name>y_position</name></variable>
+
       </memory>
       <functions>
+
+        <!-- function representing delivery (dispatch of goods) -->
         <function>
           <name>deliver</name>
-          <currentState>01</currentState>
-          <nextState>02</nextState>
+          <description>Deliver goods from previous iteration (day)</description>
+          <currentState>0</currentState>
+          <nextState>1</nextState>
+          <outputs>
+            <output><messageName>delivery</messageName></output>
+          </outputs>
         </function>
+
+        <!-- handle incoming deliveries (represents alerting buyer of dispatch) -->
+        <function>
+          <name>handleDeliveries</name>
+          <description>Handle incoming delivery messages</description>
+          <currentState>1</currentState>
+          <nextState>2</nextState>
+          <inputs>
+            <input><messageName>delivery</messageName></input>
+          </inputs>
+        </function>
+
+        <!-- function to update current deliveries (represents movement of goods) -->
+        <function>
+          <name>updateDeliveries</name>
+          <description>Update deliveries that are en route</description>
+          <currentState>2</currentState>
+          <nextState>3</nextState>
+        </function>
+
+        <!-- function to run production for the current order -->
         <function>
           <name>produce</name>
-          <currentState>02</currentState>
-          <nextState>03</nextState>
+          <description>Run production process</description>
+          <currentState>3</currentState>
+          <nextState>4</nextState>
         </function>
+
       </functions>
     </xagent>
   </agents>
   <messages>
+
+    <!-- message containing delivery information, sent from producer to buyer -->
+    <message>
+      <name>delivery</name>
+      <variables>
+        <variable><type>int</type><name>destination_id</name></variable>
+        <variable><type>int</type><name>good_type</name></variable>
+        <variable><type>int</type><name>quantity</name></variable>
+        <variable><type>double</type><name>origin_x</name></variable>
+        <variable><type>double</type><name>origin_y</name></variable>
+      </variables>
+    </message>
+
   </messages>
 </xmodel>

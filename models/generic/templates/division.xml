@@ -1,0 +1,38 @@
+<xagent>
+  <name>Division</name>
+  <!-- identity -->
+  <id>0</id>
+
+  <!-- administrative -->
+  <current_order>{0,0}</current_order>
+  <funds>0</funds>
+  <reserved_funds>0</reserved_funds>
+  <stock>0</stock>
+
+  <!-- production -->
+  <produces_good_of_type>0</produces_good_of_type>
+  <dependencies>{}</dependencies>
+  <production_costs_per_unit>0</production_costs_per_unit>
+
+  <!-- assets -->
+  <employees>0</employees>
+  <quantity_of_capital>0</quantity_of_capital>
+  <output_potential_per_employee>0</output_potential_per_employee>
+  <output_potential_per_capital_unit>0</output_potential_per_capital_unit>
+
+  <!-- output (these don't need to be set beforehand, are overwritten during iteration) -->
+  <dependency_output_potential>0</dependency_output_potential>
+  <employee_output_potential>0</employee_output_potential>
+  <capital_output_potential>0</capital_output_potential>
+  <funds_output_potential>0</funds_output_potential>
+  <output_potential>0</output_potential>
+  <output>0</output>
+
+  <!-- delivery -->
+  <deliveries>{}</deliveries>
+  <transport_quantity>0</transport_quantity><!-- doesn't need to be set, overwritten during iteration -->
+  <transportable_daily>0</transportable_daily>
+  <x_position>0</x_position>
+  <y_position>0</y_position>
+
+</xagent>

@@ -1,10 +1,11 @@
+#include <math.h>
 #include "header.h"
 #include "Division_agent_header.h"
 
 int produce() {
 
   // Check that there is a buyer, and that the current order has not been completed
-  if (CURRENT_ORDER.buyer > -1 && CURRENT_ORDER.quantity > 0) {
+  if (CURRENT_ORDER.buyer_id > -1 && CURRENT_ORDER.quantity > 0) {
 
     // Check dependencies to see how much can be made
     DEPENDENCY_OUTPUT_POTENTIAL = -1;
@@ -58,7 +59,7 @@ int produce() {
   } else {
 
     // Current order has depleted, or is already completed, so ensure it is completed
-    CURRENT_ORDER.buyer = -1;
+    CURRENT_ORDER.buyer_id = -1;
 
   }
 
@@ -69,7 +70,7 @@ int produce() {
 int deliver() {
 
   // Check an order is in progress and that stock exists to deliver
-  if (CURRENT_ORDER.buyer > -1 && CURRENT_ORDER.quantity > 0 && STOCK > 0) {
+  if (CURRENT_ORDER.buyer_id > -1 && CURRENT_ORDER.quantity > 0 && STOCK > 0) {
 
     // Check how much can be transported
     if (STOCK > TRANSPORTABLE_DAILY) {
@@ -78,9 +79,64 @@ int deliver() {
       TRANSPORT_QUANTITY = STOCK;
     }
 
-    // Add the delivery message
+    // Add the delivery message if any units exist to deliver
+    if (TRANSPORT_QUANTITY > 0) {
+      add_delivery_message(CURRENT_ORDER.buyer_id, PRODUCES_GOOD_OF_TYPE, TRANSPORT_QUANTITY, X_POSITION, Y_POSITION);
+    }
 
-    // add_delivery_message(PRODUCES, TRANSPORT_QUANTITY, X_POSITION, Y_POSITION);
+  }
+
+  return 0;
+
+}
+
+int handleDeliveries() {
+
+  // Iterate through delivery messages
+  START_DELIVERY_MESSAGE_LOOP
+
+    // If the message being considered is intended for this division, save the delivery and compute the delivery time
+    if (ID == delivery_message->destination_id) {
+      add_delivery(&DELIVERIES, delivery_message->good_type, delivery_message->quantity,
+        ceil(sqrt(
+          pow(delivery_message->origin_x - X_POSITION, 2) +
+          pow(delivery_message->origin_y - Y_POSITION, 2)
+        ))
+      );
+    }
+
+  FINISH_DELIVERY_MESSAGE_LOOP
+
+  return 0;
+
+}
+
+int updateDeliveries() {
+
+  // Initialise iteration
+  int d = 0;
+  while (d < DELIVERIES.size) {
+
+    // Reduce time remaining
+    DELIVERIES.array[d].time_remaining--;
+
+    // Check if the delivery has arrived, then adjust iteration accordingly
+    if (DELIVERIES.array[d].time_remaining <= 0) {
+
+      // Find dependency for the good type of the delivery and adjust its stock
+      for (int e=0; e<DEPENDENCIES.size; e++) {
+        if (DEPENDENCIES.array[e].good_type == DELIVERIES.array[d].good_type) {
+          DEPENDENCIES.array[e].stock += DELIVERIES.array[d].quantity;
+          break;
+        }
+      }
+
+      // Remove the delivery
+      remove_delivery(&DELIVERIES, d);
+
+    } else {
+      d++;
+    }
 
   }
 
