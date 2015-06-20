@@ -1,0 +1,11 @@
+<xagent>
+  <name>Firm</name>
+
+  <!-- identity -->
+  <id>0</id>
+  <products{}</products>
+
+  <!-- costs -->
+  <running_costs>0</running_costs>
+
+</xagent>
