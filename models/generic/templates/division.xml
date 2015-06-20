@@ -1,13 +1,20 @@
 <xagent>
   <name>Division</name>
+  
   <!-- identity -->
+  <firm_id>0</firm_id>
   <id>0</id>
+
+  <!-- costs -->
+  <running_costs>0</running_costs>
+  <unit_costs>0</unit_costs>
 
   <!-- administrative -->
   <current_order>{0,0}</current_order>
   <funds>0</funds>
   <reserved_funds>0</reserved_funds>
   <stock>0</stock>
+  <mean_wage>0</mean_wage>
 
   <!-- production -->
   <produces_good_of_type>0</produces_good_of_type>

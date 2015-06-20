@@ -5,7 +5,7 @@
 
 models/*/*
 !models/*/its
-!models/*/templates
+!models/*/templates/*
 models/*/its/*
 !models/*/its/0.xml
 !models/*/*_functions.c

@@ -143,3 +143,23 @@ int updateDeliveries() {
   return 0;
 
 }
+
+int stateInformation() {
+
+  // Retrieve dependencies
+  int dependency_ids[5];
+  for (int d=0; d<5; d++) {
+    dependency_ids[d] = (d < DEPENDENCIES.size) ? DEPENDENCIES.array[d].good_type : -1;
+  }
+
+  // Find costs
+  RUNNING_COSTS = MEAN_WAGE * EMPLOYEES;
+  UNIT_COSTS = PRODUCTION_COSTS_PER_UNIT;
+
+  // Send the information
+  add_division_information_message(FIRM_ID, ID, PRODUCES_GOOD_OF_TYPE,
+    RUNNING_COSTS, UNIT_COSTS, dependency_ids);
+
+  return 0;
+
+}

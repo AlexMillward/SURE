@@ -2,20 +2,34 @@
   <itno>0</itno>
   <agents>
     <xagent>
-      <name>Division</name>
+      <name>Firm</name>
+
       <!-- identity -->
       <id>0</id>
+      <products>{{0, 0}}</products>
+
+      <!-- costs -->
+      <running_costs>0</running_costs>
+
+    </xagent>
+    <xagent>
+      <name>Division</name>
+
+      <!-- identity -->
+      <id>1</id>
+      <firm_id>0</firm_id>
 
       <!-- administrative -->
       <current_order>{2, 10000}</current_order>
       <funds>60000</funds>
       <reserved_funds>0</reserved_funds>
       <stock>0</stock>
+      <mean_wage>2</mean_wage>
 
       <!-- production -->
       <produces_good_of_type>0</produces_good_of_type>
       <dependencies>{{1,0,1}}</dependencies>
-      <production_costs_per_unit>5</production_costs_per_unit>
+      <production_costs_per_unit>4</production_costs_per_unit>
 
       <!-- assets -->
       <employees>5</employees>
@@ -41,19 +55,22 @@
     </xagent>
     <xagent>
       <name>Division</name>
+
       <!-- identity -->
-      <id>1</id>
+      <id>2</id>
+      <firm_id>0</firm_id>
 
       <!-- administrative -->
       <current_order>{0, 10000}</current_order>
       <funds>40000</funds>
       <reserved_funds>0</reserved_funds>
       <stock>0</stock>
+      <mean_wage>3</mean_wage>
 
       <!-- production -->
       <produces_good_of_type>1</produces_good_of_type>
       <dependencies>{}</dependencies>
-      <production_costs_per_unit>5</production_costs_per_unit>
+      <production_costs_per_unit>3</production_costs_per_unit>
 
       <!-- assets -->
       <employees>7</employees>

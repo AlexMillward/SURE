@@ -5,6 +5,7 @@
   <environment>
     <functionFiles>
       <file>Division_functions.c</file>
+      <file>Firm_functions.c</file>
     </functionFiles>
     <timeUnits>
 
@@ -29,7 +30,16 @@
     </timeUnits>
     <dataTypes>
 
-      <!-- production dependency -->
+      <!-- firm product wrapper -->
+      <dataType>
+        <name>product</name>
+        <variables>
+          <variable><type>int</type><name>good_type</name></variable>
+          <variable><type>double</type><name>unit_production_cost</name></variable>
+        </variables>
+      </dataType>
+
+      <!-- production dependency wrapper -->
       <dataType>
         <name>dependency</name>
         <variables>
@@ -58,9 +68,51 @@
         </variables>
       </dataType>
 
+      <!-- division unit costs -->
+      <dataType>
+        <name>division_unit_costs</name>
+        <variables>
+          <variable><type>int</type><name>id</name></variable>
+          <variable><type>int</type><name>good_type</name></variable>
+          <variable><type>double</type><name>unit_costs</name></variable>
+          <variable><type>int</type><name>dependencies[5]</name></variable>
+        </variables>
+      </dataType>
+
     </dataTypes>
   </environment>
   <agents>
+
+    <!-- Firm agent -->
+    <xagent>
+      <name>Firm</name>
+      <description>A production firm</description>
+      <memory>
+
+        <!-- identity -->
+        <variable><type>int</type><name>id</name></variable>
+        <variable><type>product_array</type><name>products</name></variable>
+
+        <!-- costs -->
+        <variable><type>double</type><name>running_costs</name></variable>
+
+      </memory>
+      <functions>
+
+        <!-- reads division information messages -->
+        <function>
+          <name>readDivisionInformation</name>
+          <description>Reads information from divisions</description>
+          <currentState>0</currentState>
+          <nextState>1</nextState>
+          <inputs>
+            <input><messageName>division_information</messageName></input>
+          </inputs>
+        </function>
+
+      </functions>
+    </xagent>
+
     <!-- Division agent -->
     <xagent>
       <name>Division</name>
@@ -68,13 +120,19 @@
       <memory>
 
         <!-- identity -->
+        <variable><type>int</type><name>firm_id</name></variable>
         <variable><type>int</type><name>id</name></variable>
+
+        <!-- costs -->
+        <variable><type>double</type><name>running_costs</name></variable>
+        <variable><type>double</type><name>unit_costs</name></variable>
 
         <!-- administrative -->
         <variable><type>order</type><name>current_order</name></variable>
         <variable><type>double</type><name>funds</name></variable>
         <variable><type>double</type><name>reserved_funds</name></variable>
         <variable><type>int</type><name>stock</name></variable>
+        <variable><type>double</type><name>mean_wage</name></variable>
 
         <!-- production -->
         <variable><type>int</type><name>produces_good_of_type</name></variable>
@@ -105,12 +163,23 @@
       </memory>
       <functions>
 
+        <!-- function to broadcast division information -->
+        <function>
+          <name>stateInformation</name>
+          <description>State division costs and dependencies</description>
+          <currentState>0</currentState>
+          <nextState>1</nextState>
+          <outputs>
+            <output><messageName>division_information</messageName></output>
+          </outputs>
+        </function>
+
         <!-- function representing delivery (dispatch of goods) -->
         <function>
           <name>deliver</name>
           <description>Deliver goods from previous iteration (day)</description>
-          <currentState>0</currentState>
-          <nextState>1</nextState>
+          <currentState>1</currentState>
+          <nextState>2</nextState>
           <outputs>
             <output><messageName>delivery</messageName></output>
           </outputs>
@@ -120,8 +189,8 @@
         <function>
           <name>handleDeliveries</name>
           <description>Handle incoming delivery messages</description>
-          <currentState>1</currentState>
-          <nextState>2</nextState>
+          <currentState>2</currentState>
+          <nextState>3</nextState>
           <inputs>
             <input><messageName>delivery</messageName></input>
           </inputs>
@@ -131,16 +200,16 @@
         <function>
           <name>updateDeliveries</name>
           <description>Update deliveries that are en route</description>
-          <currentState>2</currentState>
-          <nextState>3</nextState>
+          <currentState>3</currentState>
+          <nextState>4</nextState>
         </function>
 
         <!-- function to run production for the current order -->
         <function>
           <name>produce</name>
           <description>Run production process</description>
-          <currentState>3</currentState>
-          <nextState>4</nextState>
+          <currentState>4</currentState>
+          <nextState>5</nextState>
         </function>
 
       </functions>
@@ -157,6 +226,19 @@
         <variable><type>int</type><name>quantity</name></variable>
         <variable><type>double</type><name>origin_x</name></variable>
         <variable><type>double</type><name>origin_y</name></variable>
+      </variables>
+    </message>
+
+    <!-- message containing division information -->
+    <message>
+      <name>division_information</name>
+      <variables>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>id</name></variable>
+        <variable><type>int</type><name>good_type</name></variable>
+        <variable><type>double</type><name>running_costs</name></variable>
+        <variable><type>double</type><name>unit_costs</name></variable>
+        <variable><type>int</type><name>dependencies[5]</name></variable>
       </variables>
     </message>
 
