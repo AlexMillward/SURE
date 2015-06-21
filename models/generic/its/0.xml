@@ -6,7 +6,7 @@
 
       <!-- identity -->
       <id>0</id>
-      <products>{{0, 0}}</products>
+      <products>{{0, 0, 10, 1, 0}}</products>
 
       <!-- costs -->
       <running_costs>0</running_costs>

@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include <stdio.h>
 
 #include "header.h"
 #include "Firm_agent_header.h"
@@ -68,6 +67,68 @@ int readDivisionInformation() {
 
   // Clean up
   free_division_unit_costs_array(&costs);
+
+  return 0;
+
+}
+
+/*
+int allocateRunningFunds() {
+
+  START_DIVISION_INFORMATION_MESSAGE_LOOP
+
+    // Check division belongs to firm
+    if (division_information_message->firm_id == ID) {
+
+      // Allocate funds
+      FUNDS -= division_information_message->running_costs;
+      add_funds_allocation_message(
+        division_information_message->id,
+        division_information_message->running_costs);
+
+    }
+
+  FINISH_DIVISION_INFORMATION_MESSAGE_LOOP
+
+  return 0;
+
+}
+*/
+
+int decidePrices() {
+
+  // Compute the proportion of sales expectation for each product
+  int p;
+  int sales_expectation_total = 0;
+
+  for (p=0; p<PRODUCTS.size; p++) {
+
+    sales_expectation_total += PRODUCTS.array[p].sales_expectation;
+
+  }
+
+  // Compute the weightings for each product (overall, including sales proportion)
+  double weightings[PRODUCTS.size];
+  double weightings_total = 0;
+
+  for (p=0; p<PRODUCTS.size; p++) {
+
+    weightings[p] = (((double) PRODUCTS.array[p].sales_expectation) /
+      ((double) sales_expectation_total)) * PRODUCTS.array[p].running_costs_contribution;
+    weightings_total += weightings[p];
+
+  }
+
+  // Determine the price for each product (unit costs + running costs allocation)
+  double allocation, unit_allocation;
+
+  for (p=0; p<PRODUCTS.size; p++) {
+
+    allocation = (weightings[p] / weightings_total) * RUNNING_COSTS;
+    unit_allocation = allocation / PRODUCTS.array[p].sales_expectation;
+    PRODUCTS.array[p].price = PRODUCTS.array[p].unit_production_cost + unit_allocation;
+
+  }
 
   return 0;
 

@@ -36,6 +36,9 @@
         <variables>
           <variable><type>int</type><name>good_type</name></variable>
           <variable><type>double</type><name>unit_production_cost</name></variable>
+          <variable><type>int</type><name>sales_expectation</name></variable>
+          <variable><type>double</type><name>running_costs_contribution</name></variable>
+          <variable><type>double</type><name>price</name></variable>
         </variables>
       </dataType>
 
@@ -108,6 +111,14 @@
           <inputs>
             <input><messageName>division_information</messageName></input>
           </inputs>
+        </function>
+
+        <!-- decide on prices -->
+        <function>
+          <name>decidePrices</name>
+          <description>Decide on prices for each product based on costs</description>
+          <currentState>1</currentState>
+          <nextState>2</nextState>
         </function>
 
       </functions>
