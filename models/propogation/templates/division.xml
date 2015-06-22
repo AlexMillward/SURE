@@ -1,0 +1,37 @@
+<xagent>
+  <name>Division</name>
+
+  <!-- == basic typed == -->
+
+  <!-- Identity details -->
+  <firm_id>0</firm_id>
+  <id>0</id>
+
+  <!-- Production details -->
+  <output_good_id>0</output_good_id>
+  <production_costs_per_unit>0</production_costs_per_unit>
+
+  <!-- == data structures == -->
+
+  <!-- (current, target) -->
+  <output_inventory>{0,0}</output_inventory>
+
+  <!-- [(good id, current, target, ordered, restock_level, requirement_per_unit_output)] -->
+  <production_inventory>{}</production_inventory>
+
+  <!-- (unit) -->
+  <division_costs>{0}</division_costs>
+
+  <!-- (production) -->
+  <funding>{0}</funding>
+
+  <!-- (quantity, production_per_unit) -->
+  <physical_capital>{0,0}</physical_capital>
+
+  <!-- (quantity, production_per_unit) -->
+  <human_capital>{0,0}</human_capital>
+
+  <!-- leave alone, computed during iteration (length 6) -->
+  <output_information>{0,0,0,0,0,0}</output_information>
+
+</xagent>

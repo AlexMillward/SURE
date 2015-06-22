@@ -5,6 +5,7 @@
   <environment>
     <functionFiles>
       <file>Division_functions.c</file>
+      <file>Division_helpers.c</file>
       <file>Firm_functions.c</file>
     </functionFiles>
     <timeUnits>
@@ -71,13 +72,13 @@
         </variables>
       </dataType>
 
-      <!-- division unit costs -->
+      <!-- division cost information -->
       <dataType>
-        <name>division_unit_costs</name>
+        <name>division_cost_information</name>
         <variables>
           <variable><type>int</type><name>id</name></variable>
           <variable><type>int</type><name>good_type</name></variable>
-          <variable><type>double</type><name>unit_costs</name></variable>
+          <variable><type>double</type><name>production_costs_per_unit</name></variable>
           <variable><type>int</type><name>dependencies[5]</name></variable>
         </variables>
       </dataType>
@@ -102,23 +103,12 @@
       </memory>
       <functions>
 
-        <!-- reads division information messages -->
-        <function>
-          <name>readDivisionInformation</name>
-          <description>Reads information from divisions</description>
-          <currentState>0</currentState>
-          <nextState>1</nextState>
-          <inputs>
-            <input><messageName>division_information</messageName></input>
-          </inputs>
-        </function>
-
         <!-- decide on prices -->
         <function>
           <name>decidePrices</name>
           <description>Decide on prices for each product based on costs</description>
-          <currentState>1</currentState>
-          <nextState>2</nextState>
+          <currentState>0</currentState>
+          <nextState>1</nextState>
         </function>
 
       </functions>
@@ -185,12 +175,34 @@
           </outputs>
         </function>
 
+        <!-- determine unit costs -->
+        <function>
+          <name>determineUnitCosts</name>
+          <description>Determine the division's unit costs</description>
+          <currentState>1</currentState>
+          <nextState>2</nextState>
+          <inputs>
+            <input><messageName>division_information</messageName></input>
+          </inputs>
+        </function>
+
+        <!-- state unit costs -->
+        <function>
+          <name>stateUnitCosts</name>
+          <description>State the divison's unit costs</description>
+          <currentState>2</currentState>
+          <nextState>3</nextState>
+          <outputs>
+            <output><messageName>division_unit_costs</messageName></output>
+          </outputs>
+        </function>
+
         <!-- function representing delivery (dispatch of goods) -->
         <function>
           <name>deliver</name>
           <description>Deliver goods from previous iteration (day)</description>
-          <currentState>1</currentState>
-          <nextState>2</nextState>
+          <currentState>3</currentState>
+          <nextState>4</nextState>
           <outputs>
             <output><messageName>delivery</messageName></output>
           </outputs>
@@ -200,8 +212,8 @@
         <function>
           <name>handleDeliveries</name>
           <description>Handle incoming delivery messages</description>
-          <currentState>2</currentState>
-          <nextState>3</nextState>
+          <currentState>4</currentState>
+          <nextState>5</nextState>
           <inputs>
             <input><messageName>delivery</messageName></input>
           </inputs>
@@ -211,16 +223,16 @@
         <function>
           <name>updateDeliveries</name>
           <description>Update deliveries that are en route</description>
-          <currentState>3</currentState>
-          <nextState>4</nextState>
+          <currentState>5</currentState>
+          <nextState>6</nextState>
         </function>
 
         <!-- function to run production for the current order -->
         <function>
           <name>produce</name>
           <description>Run production process</description>
-          <currentState>4</currentState>
-          <nextState>5</nextState>
+          <currentState>6</currentState>
+          <nextState>7</nextState>
         </function>
 
       </functions>
@@ -248,8 +260,18 @@
         <variable><type>int</type><name>id</name></variable>
         <variable><type>int</type><name>good_type</name></variable>
         <variable><type>double</type><name>running_costs</name></variable>
-        <variable><type>double</type><name>unit_costs</name></variable>
+        <variable><type>double</type><name>production_costs_per_unit</name></variable>
         <variable><type>int</type><name>dependencies[5]</name></variable>
+      </variables>
+    </message>
+
+    <!-- message containing division unit costs -->
+    <message>
+      <name>division_status</name>
+      <variables>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>id</name></variable>
+        <variable><type>double</type><name>unit_costs</name></variable>
       </variables>
     </message>
 

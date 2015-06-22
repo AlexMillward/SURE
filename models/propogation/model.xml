@@ -1,0 +1,179 @@
+<xmodel version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation='http://flame.ac.uk/schema/xmml_v2.xsd'>
+
+  <name>Model of a production firm</name>
+  <version>0.0.1</version>
+  <description>Alex Millward, 2015</description>
+
+  <environment>
+
+    <functionFiles>
+
+      <!-- Agent functions -->
+      <file>Division_functions.c</file>
+
+      <!-- Helper functions -->
+      <file>Division_helpers.c</file>
+
+    </functionFiles>
+
+    <dataTypes>
+
+      <dataType>
+        <name>division_output_inventory</name>
+        <description>The output inventory of a firm division</description>
+        <variables>
+          <variable><type>int</type><name>current</name></variable>
+          <variable><type>int</type><name>target</name></variable>
+        </variables>
+      </dataType>
+
+      <dataType>
+        <name>division_production_inventory_component</name>
+        <description>A description of a component of a division's production inventory</description>
+        <variables>
+          <variable><type>int</type><name>good_id</name></variable>
+          <variable><type>int</type><name>current</name></variable>
+          <variable><type>int</type><name>target</name></variable>
+          <variable><type>int</type><name>ordered</name></variable>
+          <variable><type>int</type><name>restock_level</name></variable>
+          <variable><type>int</type><name>requirement_per_unit_output</name></variable>
+        </variables>
+      </dataType>
+
+      <dataType>
+        <name>division_funding</name>
+        <description>Listings of funding made available to the division</description>
+        <variables>
+          <variable><type>int</type><name>production</name></variable>
+        </variables>
+      </dataType>
+
+      <dataType>
+        <name>division_costs</name>
+        <descriptions>A description of a division's costs</descriptions>
+        <variables>
+          <variable><type>double</type><name>unit</name></variable>
+        </variables>
+      </dataType>
+
+      <dataType>
+        <name>division_physical_capital</name>
+        <description>A description of a division's physical capital</description>
+        <variables>
+          <variable><type>int</type><name>quantity</name></variable>
+          <variable><type>int</type><name>production_per_unit</name></variable>
+        </variables>
+      </dataType>
+
+      <dataType>
+        <name>division_human_capital</name>
+        <description>A description of a division's human capital</description>
+        <variables>
+          <variable><type>int</type><name>quantity</name></variable>
+          <variable><type>int</type><name>production_per_unit</name></variable>
+        </variables>
+      </dataType>
+
+      <dataType>
+        <name>division_output_information</name>
+        <description>Information about a firm division's output and output potential</description>
+        <variables>
+          <variable><type>int</type><name>physical_capital_potential</name></variable>
+          <variable><type>int</type><name>human_capital_potential</name></variable>
+          <variable><type>int</type><name>production_inventory_potential</name></variable>
+          <variable><type>int</type><name>funding_potential</name></variable>
+          <variable><type>int</type><name>potential</name></variable>
+          <variable><type>int</type><name>actual</name></variable>
+        </variables>
+      </dataType>
+
+      <dataType>
+        <name>division_availability_information</name>
+        <description>Information about a division's current output availability</description>
+        <variables>
+          <variable><type>int</type><name>id</name></variable>
+          <variable><type>int</type><name>good_id</name></variable>
+          <variable><type>double</type><name>unit_cost</name></variable>
+          <variable><type>int</type><name>quantity</name></variable>
+        </variables>
+      </dataType>
+
+    </dataTypes>
+
+  </environment>
+  <agents>
+
+    <xagent>
+
+      <name>Division</name>
+      <description>A division of a firm</description>
+
+      <memory>
+        <!-- Identity details -->
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>id</name></variable>
+
+        <!-- Production details -->
+        <variable><type>int</type><name>output_good_id</name></variable>
+        <variable><type>double</type><name>production_costs_per_unit</name></variable>
+
+        <!-- == data structures == -->
+        <variable><type>division_output_inventory</type><name>output_inventory</name></variable>
+        <variable><type>division_production_inventory_component_array</type><name>production_inventory</name></variable>
+        <variable><type>division_costs</type><name>costs</name></variable>
+        <variable><type>division_funding</type><name>funding</name></variable>
+        <variable><type>division_physical_capital</type><name>physical_capital</name></variable>
+        <variable><type>division_human_capital</type><name>human_capital</name></variable>
+        <variable><type>division_output_information</type><name>output_information</name></variable>
+      </memory>
+
+      <functions>
+
+        <function>
+          <name>produce</name>
+          <description>Computes production for a single time unit (day)</description>
+          <currentState>0</currentState>
+          <nextState>1</nextState>
+        </function>
+
+        <function>
+          <name>stateOutputAvailability</name>
+          <description>State the availability of the division's output</description>
+          <currentState>1</currentState>
+          <nextState>2</nextState>
+          <outputs>
+            <output><messageName>division_output_availability</messageName></output>
+          </outputs>
+        </function>
+
+        <function>
+          <name>checkProductionInventory</name>
+          <description>Check if the division's production inventory needs restocking</description>
+          <currentState>2</currentState>
+          <nextState>3</nextState>
+          <inputs>
+            <input><messageName>division_output_availability</messageName></input>
+          </inputs>
+        </function>
+
+      </functions>
+
+    </xagent>
+
+  </agents>
+  <messages>
+
+    <message>
+      <name>division_output_availability</name>
+      <variables>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>id</name></variable>
+        <variable><type>int</type><name>good_id</name></variable>
+        <variable><type>double</type><name>unit_cost</name></variable>
+        <variable><type>int</type><name>quantity</name></variable>
+      </variables>
+    </message>
+
+  </messages>
+</xmodel>

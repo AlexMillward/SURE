@@ -10,4 +10,6 @@ models/*/*
 models/*/its/*
 !models/*/its/0.xml
 !models/*/*_functions.c
+!models/*/*_helpers.h
+!models/*/*_helpers.c
 !models/*/*.xml

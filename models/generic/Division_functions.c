@@ -1,6 +1,7 @@
 #include <math.h>
 #include "header.h"
 #include "Division_agent_header.h"
+#include "Division_helpers.h"
 
 int produce() {
 
@@ -98,7 +99,7 @@ int handleDeliveries() {
     // If the message being considered is intended for this division, save the delivery and compute the delivery time
     if (ID == delivery_message->destination_id) {
       add_delivery(&DELIVERIES, delivery_message->good_type, delivery_message->quantity,
-        ceil(sqrt(
+        floor(sqrt(
           pow(delivery_message->origin_x - X_POSITION, 2) +
           pow(delivery_message->origin_y - Y_POSITION, 2)
         ))
@@ -154,11 +155,53 @@ int stateInformation() {
 
   // Find costs
   RUNNING_COSTS = MEAN_WAGE * EMPLOYEES;
-  UNIT_COSTS = PRODUCTION_COSTS_PER_UNIT;
 
   // Send the information
   add_division_information_message(FIRM_ID, ID, PRODUCES_GOOD_OF_TYPE,
-    RUNNING_COSTS, UNIT_COSTS, dependency_ids);
+    RUNNING_COSTS, PRODUCTION_COSTS_PER_UNIT, dependency_ids);
+
+  return 0;
+
+}
+
+int determineUnitCosts() {
+
+  // Make dynamic array for cost information
+  division_cost_information_array costs;
+  init_division_cost_information_array(&costs);
+
+  // Begin iteration
+  RUNNING_COSTS = 0;
+  START_DIVISION_INFORMATION_MESSAGE_LOOP
+
+    // Check if relevant
+    if (division_information_message->firm_id == FIRM_ID) {
+
+      // Store cost information
+      RUNNING_COSTS += division_information_message->running_costs;
+      add_division_cost_information(&costs,
+        division_information_message->id,
+        division_information_message->good_type,
+        division_information_message->production_costs_per_unit,
+        division_information_message->dependencies);
+
+    }
+
+  FINISH_DIVISION_INFORMATION_MESSAGE_LOOP
+
+  UNIT_COSTS = computeUnitCosts(PRODUCES_GOOD_OF_TYPE, &costs);
+
+  // Clean up
+  free_division_cost_information_array(&costs);
+
+  return 0;
+
+}
+
+int stateStatus() {
+
+  // Add message stating to firm the computed unit costs
+  add_division_status_message(FIRM_ID, ID, UNIT_COSTS);
 
   return 0;
 
