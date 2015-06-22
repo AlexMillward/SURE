@@ -89,13 +89,24 @@
       </dataType>
 
       <dataType>
-        <name>division_availability_information</name>
-        <description>Information about a division's current output availability</description>
+        <name>division_transport_information</name>
+        <description>Information about transporting a division's goods</description>
         <variables>
-          <variable><type>int</type><name>id</name></variable>
-          <variable><type>int</type><name>good_id</name></variable>
-          <variable><type>double</type><name>unit_cost</name></variable>
-          <variable><type>int</type><name>quantity</name></variable>
+          <variable><type>double</type><name>x_position</name></variable>
+          <variable><type>double</type><name>y_position</name></variable>
+          <variable><type>double</type><name>vehicle_speed</name></variable>
+          <variable><type>int</type><name>vehicle_capacity</name></variable>
+          <variable><type>double</type><name>vehicle_cost_per_day</name></variable>
+          <variable><type>double</type><name>unit_cost_per_day</name></variable>
+        </variables>
+      </dataType>
+
+      <dataType>
+        <name>division_transport_quote</name>
+        <description>A quote for delivery costs and time</description>
+        <variables>
+          <variable><type>double</type><name>cost</name></variable>
+          <variable><type>int</type><name>time</name></variable>
         </variables>
       </dataType>
 
@@ -126,6 +137,7 @@
         <variable><type>division_physical_capital</type><name>physical_capital</name></variable>
         <variable><type>division_human_capital</type><name>human_capital</name></variable>
         <variable><type>division_output_information</type><name>output_information</name></variable>
+        <variable><type>division_transport_information</type><name>transport_information</name></variable>
       </memory>
 
       <functions>
@@ -138,22 +150,22 @@
         </function>
 
         <function>
-          <name>stateOutputAvailability</name>
-          <description>State the availability of the division's output</description>
+          <name>stateProductionInventoryRequirements</name>
+          <description>State to other divisions current restocking requirements</description>
           <currentState>1</currentState>
           <nextState>2</nextState>
           <outputs>
-            <output><messageName>division_output_availability</messageName></output>
+            <output><messageName>division_requirement</messageName></output>
           </outputs>
         </function>
 
         <function>
-          <name>checkProductionInventory</name>
-          <description>Check if the division's production inventory needs restocking</description>
+          <name>offerOutput</name>
+          <description>Offer the divison's output to another division</description>
           <currentState>2</currentState>
           <nextState>3</nextState>
           <inputs>
-            <input><messageName>division_output_availability</messageName></input>
+            <input><messageName>division_requirement</messageName></input>
           </inputs>
         </function>
 
@@ -165,13 +177,14 @@
   <messages>
 
     <message>
-      <name>division_output_availability</name>
+      <name>division_requirement</name>
       <variables>
         <variable><type>int</type><name>firm_id</name></variable>
-        <variable><type>int</type><name>id</name></variable>
+        <variable><type>int</type><name>division_id</name></variable>
         <variable><type>int</type><name>good_id</name></variable>
-        <variable><type>double</type><name>unit_cost</name></variable>
         <variable><type>int</type><name>quantity</name></variable>
+        <variable><type>double</type><name>x_position</name></variable>
+        <variable><type>double</type><name>y_position</name></variable>
       </variables>
     </message>
 

@@ -34,4 +34,7 @@
   <!-- leave alone, computed during iteration (length 6) -->
   <output_information>{0,0,0,0,0,0}</output_information>
 
+  <!-- (position_x, position_y, vehicle_speed, vehicle_capacity, vehicle_cost_per_day, unit_cost_per_day) -->
+  <transport_information>{0,0,0,0,0,0}</transport_information>
+
 </xagent>

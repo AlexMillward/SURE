@@ -65,107 +65,60 @@ int produce() {
 
 }
 
-int stateOutputAvailability() {
+int stateProductionInventoryRequirements() {
 
-  // State availability of output if any exists
-  if (OUTPUT_INVENTORY.current > 0) {
-    add_division_output_availability_message(FIRM_ID, ID, OUTPUT_GOOD_ID,
-      COSTS.unit, OUTPUT_INVENTORY.current);
+  double required_amount;
+
+  for (int p=0; p<PRODUCTION_INVENTORY.size; p++) {
+
+    // Check if a restock is required
+    if ((PRODUCTION_INVENTORY.array[p].current + PRODUCTION_INVENTORY.array[p].ordered) <
+      PRODUCTION_INVENTORY.array[p].restock_level)
+    {
+
+      // Calculate the required amount
+      required_amount = PRODUCTION_INVENTORY.array[p].target -
+        (PRODUCTION_INVENTORY.array[p].current + PRODUCTION_INVENTORY.array[p].ordered);
+
+      // Add the requirement message
+      add_division_requirement_message(FIRM_ID, ID,
+        PRODUCTION_INVENTORY.array[p].good_id, required_amount,
+        TRANSPORT_INFORMATION.x_position, TRANSPORT_INFORMATION.y_position);
+
+    }
+
   }
 
   return 0;
 
 }
 
-int checkProductionInventory() {
 
-  // Variable initialisation
-  int restock_amount, order_amount, p, r;
+int offerOutput() {
 
-  // Initialise storage of relevant availabilities
-  division_availability_information_array relevant_availabilities;
-  init_division_availability_information_array(&relevant_availabilities);
+  int offered = 0;
 
-  START_DIVISION_OUTPUT_AVAILABILITY_MESSAGE_LOOP
+  START_DIVISION_REQUIREMENT_MESSAGE_LOOP
 
-    // Check the availability information is relevant
-    if (division_output_availability_message->firm_id == FIRM_ID &&
-    division_output_availability_message->id != ID) {
+    // Check the message is relevant and that the quantity is available
+    if (FIRM_ID == division_requirement_message->firm_id &&
+      OUTPUT_GOOD_ID == division_requirement_message->good_id &&
+      (OUTPUT_INVENTORY.current - offered) >= division_requirement_message->quantity)
+    {
 
-      // Store information about resource availability
-      add_division_availability_information(&relevant_availabilities,
-        division_output_availability_message->id,
-        division_output_availability_message->good_id,
-        division_output_availability_message->unit_cost,
-        division_output_availability_message->quantity);
+      // Adjust the amount offered
+      offered += division_requirement_message->quantity;
 
-    }
-
-  FINISH_DIVISION_OUTPUT_AVAILABILITY_MESSAGE_LOOP
-
-  // Sort relevant availabilities by unit costs (to get cheapest first)
-  qsort(relevant_availabilities.array, relevant_availabilities.size,
-    sizeof(relevant_availabilities), compare_availability_costs);
-
-  for (p=0; p<PRODUCTION_INVENTORY.size; p++) {
-
-    // Determine the amount to restock
-    restock_amount = (PRODUCTION_INVENTORY.array[p].target -
-      (PRODUCTION_INVENTORY.array[p].current + PRODUCTION_INVENTORY.array[p].ordered));
-
-    for (r=0; r<relevant_availabilities.size; r++) {
-
-      // Check if further orders are required
-      if (restock_amount <= 0) {
-        break;
-      }
-
-      // Check that both the production inventory component and availability concern the same good
-      else if (PRODUCTION_INVENTORY.array[p].good_id == relevant_availabilities.array[r].good_id) {
-
-        // Determine the amount to order and adjust amount remaining to order
-        order_amount = restock_amount < relevant_availabilities.array[r].quantity ?
-          restock_amount : relevant_availabilities.array[r].quantity;
-        restock_amount -= order_amount;
-
-        // Send order message
-        // add_division_order_message(FIRM_ID, ID, relevant_availabilities.array[r].id, order_amount);
-
-      }
+      // Calculate transport costs
+      division_transport_quote transport_quote = calculate_transport_costs(
+        &TRANSPORT_INFORMATION,
+        division_requirement_message->x_position,
+        division_requirement_message->y_position,
+        division_requirement_message->quantity);
 
     }
 
-  }
-
-  // Clean up availability storage
-  free_division_availability_information_array(&relevant_availabilities);
-
-  return 0;
-
-}
-
-int processOrders() {
-
-  int accepted_amount;
-
-  START_DIVISION_ORDER_MESSAGE_LOOP
-
-    // Check that there is remaining stock and that the order is relevant
-    if (OUTPUT_INVENTORY.current > 0 && division_order_message->firm_id == FIRM_ID &&
-    division_order_message->seller_id == ID) {
-
-      // Calculate amount to accept, adjust output inventory accordingly
-      accepted_amount = OUTPUT_INVENTORY.current < division_order_message->quantity ?
-        OUTPUT_INVENTORY.current : division_order_message->quantity;
-      OUTPUT_INVENTORY.current -= accepted_amount;
-
-      // Send confirmation message
-      add_division_order_confirmation_message(FIRM_ID, ID,
-        division_order_message->buyer_id, accepted_amount);
-
-    }
-
-  FINISH_DIVISION_ORDER_MESSAGE_LOOP
+  FINISH_DIVISION_REQUIREMENT_MESSAGE_LOOP
 
   return 0;
 

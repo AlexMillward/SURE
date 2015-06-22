@@ -3,6 +3,8 @@
 
 #include "header.h"
 
-int compare_availability_costs(const void * a, const void * b);
+division_transport_quote calculate_transport_costs(
+  division_transport_information * source_information,
+  double destination_x, double destination_y, double quantity);
 
 #endif
