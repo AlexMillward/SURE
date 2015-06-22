@@ -116,9 +116,70 @@ int offerOutput() {
         division_requirement_message->y_position,
         division_requirement_message->quantity);
 
+      // Add the offer message
+      add_division_offer_message(FIRM_ID, ID,
+        division_requirement_message->id,
+        division_requirement_message->good_id,
+        division_requirement_message->quantity,
+        UNIT_COST + transport_quote.cost, transport_quote.time);
+
+      // Clean up
+      free_division_transport_quote(&transport_quote);
+
     }
 
   FINISH_DIVISION_REQUIREMENT_MESSAGE_LOOP
+
+  return 0;
+
+}
+
+int processOffers() {
+
+  // Initialise required variables
+  int current_id, b;
+  division_offer_information_array best_offers;
+  init_division_offer_information_array(&best_offers);
+
+  START_DIVISION_OFFER_MESSAGE_LOOP
+
+    // Check relevance of message
+    if (FIRM_ID == division_offer_message->firm_id && ID == division_offer_message->target_id) {
+
+      // Find entry for good considered if one exists
+      current_id = -1;
+      for (b=0; b<best_offers.size; b++) {
+        if (best_offers.array[b].good_id == division_offer_message->good_id) {
+          current_id = b;
+          break;
+        }
+      }
+
+      // Good considered not previously considered
+      if (current_id == -1) {
+        add_division_offer_information(&best_offers,
+          division_offer_message->source_id,
+          division_offer_message->quantity,
+          division_offer_message->cost,
+          division_offer_message->delivery_time);
+      }
+
+      // Good considered previously considered, but has a lower cost
+      else if (division_offer_message->cost < best_offers.array[b].cost) {
+        best_offers.array[b].source_id = division_offer_message->source_id;
+        best_offers.array[b].quantity = division_offer_message->quantity;
+        best_offers.array[b].cost = division_offer_message->cost;
+        best_offers.array[b].delivery_time = division_offer_message->delivery_time;
+      }
+
+    }
+
+  FINISH_DIVISION_OFFER_MESSAGE_LOOP
+
+  // TODO : Process best offers
+
+  // Clean up
+  free_division_offer_information_array(&best_offers);
 
   return 0;
 
