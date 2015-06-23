@@ -152,8 +152,6 @@ int processOffers() {
 
   START_DIVISION_OFFER_MESSAGE_LOOP
 
-    printf("M : %i \n", ID);
-
     // Find entry for good considered if one exists
     current_id = -1;
     for (b=0; b<best_offers.size; b++) {
