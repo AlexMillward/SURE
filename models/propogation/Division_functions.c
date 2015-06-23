@@ -107,11 +107,8 @@ int offerOutput() {
 
   START_DIVISION_REQUIREMENT_MESSAGE_LOOP
 
-    // Check the message is relevant and that the quantity is available
-    if (FIRM_ID == division_requirement_message->firm_id &&
-      ID != division_requirement_message->division_id &&
-      OUTPUT_GOOD_ID == division_requirement_message->good_id &&
-      (OUTPUT_INVENTORY.current - offered) >= division_requirement_message->quantity)
+    // Check that the quantity is available
+    if ((OUTPUT_INVENTORY.current - offered) >= division_requirement_message->quantity)
     {
 
       // Adjust the amount offered
@@ -155,41 +152,38 @@ int processOffers() {
 
   START_DIVISION_OFFER_MESSAGE_LOOP
 
-    // Check relevance of message
-    if (FIRM_ID == division_offer_message->firm_id && ID == division_offer_message->target_id) {
+    printf("M : %i \n", ID);
 
-      // Find entry for good considered if one exists
-      current_id = -1;
-      for (b=0; b<best_offers.size; b++) {
-        if (best_offers.array[b].good_id == division_offer_message->good_id) {
-          current_id = b;
-          break;
-        }
+    // Find entry for good considered if one exists
+    current_id = -1;
+    for (b=0; b<best_offers.size; b++) {
+      if (best_offers.array[b].good_id == division_offer_message->good_id) {
+        current_id = b;
+        break;
       }
+    }
 
-      // Good considered not previously considered
-      if (current_id == -1) {
-        add_division_offer_information(&best_offers,
-          division_offer_message->source_id,
-          division_offer_message->good_id,
-          division_offer_message->inventory_number,
-          division_offer_message->quantity,
-          division_offer_message->overall_cost,
-          division_offer_message->cost_before_transport,
-          division_offer_message->delivery_time);
-      }
+    // Good considered not previously considered
+    if (current_id == -1) {
+      add_division_offer_information(&best_offers,
+        division_offer_message->source_id,
+        division_offer_message->good_id,
+        division_offer_message->inventory_number,
+        division_offer_message->quantity,
+        division_offer_message->overall_cost,
+        division_offer_message->cost_before_transport,
+        division_offer_message->delivery_time);
+    }
 
-      // Good considered previously considered, but has a lower cost
-      else if (division_offer_message->overall_cost < best_offers.array[b].overall_cost) {
-        best_offers.array[b].source_id = division_offer_message->source_id;
-        best_offers.array[b].good_id = division_offer_message->good_id;
-        best_offers.array[b].inventory_number = division_offer_message->inventory_number;
-        best_offers.array[b].quantity = division_offer_message->quantity;
-        best_offers.array[b].overall_cost = division_offer_message->overall_cost;
-        best_offers.array[b].cost_before_transport = division_offer_message->cost_before_transport;
-        best_offers.array[b].delivery_time = division_offer_message->delivery_time;
-      }
-
+    // Good considered previously considered, but has a lower cost
+    else if (division_offer_message->overall_cost < best_offers.array[b].overall_cost) {
+      best_offers.array[b].source_id = division_offer_message->source_id;
+      best_offers.array[b].good_id = division_offer_message->good_id;
+      best_offers.array[b].inventory_number = division_offer_message->inventory_number;
+      best_offers.array[b].quantity = division_offer_message->quantity;
+      best_offers.array[b].overall_cost = division_offer_message->overall_cost;
+      best_offers.array[b].cost_before_transport = division_offer_message->cost_before_transport;
+      best_offers.array[b].delivery_time = division_offer_message->delivery_time;
     }
 
   FINISH_DIVISION_OFFER_MESSAGE_LOOP

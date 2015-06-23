@@ -190,7 +190,30 @@
           <currentState>2</currentState>
           <nextState>3</nextState>
           <inputs>
-            <input><messageName>division_requirement</messageName></input>
+            <input>
+              <messageName>division_requirement</messageName>
+              <filter>
+                <lhs>
+                  <lhs><value>a.firm_id</value></lhs>
+                  <op>EQ</op>
+                  <rhs><value>m.firm_id</value></rhs>
+                </lhs>
+                <op>AND</op>
+                <rhs>
+                  <lhs>
+                    <lhs><value>a.id</value></lhs>
+                    <op>NEQ</op>
+                    <rhs><value>m.division_id</value></rhs>
+                  </lhs>
+                  <op>AND</op>
+                  <rhs>
+                    <lhs><value>a.output_good_id</value></lhs>
+                    <op>EQ</op>
+                    <rhs><value>m.good_id</value></rhs>
+                  </rhs>
+                </rhs>
+              </filter>
+            </input>
           </inputs>
           <outputs>
             <output><messageName>division_offer</messageName></output>
@@ -203,7 +226,22 @@
           <currentState>3</currentState>
           <nextState>4</nextState>
           <inputs>
-            <input><messageName>division_offer</messageName></input>
+            <input>
+              <messageName>division_offer</messageName>
+              <filter>
+                <lhs>
+                  <lhs><value>a.firm_id</value></lhs>
+                  <op>EQ</op>
+                  <rhs><value>m.firm_id</value></rhs>
+                </lhs>
+                <op>AND</op>
+                <rhs>
+                  <lhs><value>a.id</value></lhs>
+                  <op>EQ</op>
+                  <rhs><value>m.target_id</value></rhs>
+                </rhs>
+              </filter>
+            </input>
           </inputs>
           <outputs>
             <output><messageName>division_acceptance</messageName></output>
@@ -216,8 +254,30 @@
           <currentState>4</currentState>
           <nextState>5</nextState>
           <inputs>
-            <input><messageName>division_acceptance</messageName></input>
+            <input>
+              <messageName>division_acceptance</messageName>
+              <filter>
+                <lhs>
+                  <lhs><value>a.firm_id</value></lhs>
+                  <op>EQ</op>
+                  <rhs><value>m.firm_id</value></rhs>
+                </lhs>
+                <op>AND</op>
+                <rhs>
+                  <lhs><value>a.id</value></lhs>
+                  <op>EQ</op>
+                  <rhs><value>m.source_id</value></rhs>
+                </rhs>
+              </filter>
+            </input>
           </inputs>
+        </function>
+
+        <function>
+          <name>updateDeliveries</name>
+          <description>Update deliveries to the division</description>
+          <currentState>5</currentState>
+          <nextState>6</nextState>
         </function>
 
       </functions>
