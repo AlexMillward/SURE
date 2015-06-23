@@ -6,7 +6,7 @@ division_transport_quote calculate_transport_costs(
   double destination_x, double destination_y, double quantity)
 {
 
-  int vehicles_required;
+  // Variable initialisation
   double distance, delivery_time, transport_costs;
 
   // Calculate the distance travelled, and from it the delivery time
@@ -15,11 +15,8 @@ division_transport_quote calculate_transport_costs(
     pow((source_information->y_position - destination_y), 2) );
   delivery_time = distance / source_information->vehicle_speed;
 
-  // Calculate the number of vehicles required, and the transport costs
-  vehicles_required = quantity / source_information->vehicle_capacity;
-  transport_costs = (
-    (((double) vehicles_required) * source_information->vehicle_cost_per_day) +
-    (((double) quantity) * source_information->unit_cost_per_day));
+  // Calculate transport costs
+  transport_costs = ((double) quantity) * source_information->unit_cost_per_day;
 
   // Build a result object
   division_transport_quote result;

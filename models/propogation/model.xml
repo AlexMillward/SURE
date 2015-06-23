@@ -11,6 +11,8 @@
 
       <!-- Agent functions -->
       <file>Division_functions.c</file>
+      <file>Firm_functions.c</file>
+      <file>Retailer_functions.c</file>
 
       <!-- Helper functions -->
       <file>Division_helpers.c</file>
@@ -38,6 +40,7 @@
           <variable><type>int</type><name>ordered</name></variable>
           <variable><type>int</type><name>restock_level</name></variable>
           <variable><type>int</type><name>requirement_per_unit_output</name></variable>
+          <variable><type>double</type><name>latest_unit_cost</name></variable>
         </variables>
       </dataType>
 
@@ -45,7 +48,7 @@
         <name>division_funding</name>
         <description>Listings of funding made available to the division</description>
         <variables>
-          <variable><type>int</type><name>production</name></variable>
+          <variable><type>double</type><name>production</name></variable>
         </variables>
       </dataType>
 
@@ -54,6 +57,7 @@
         <descriptions>A description of a division's costs</descriptions>
         <variables>
           <variable><type>double</type><name>unit</name></variable>
+          <variable><type>double</type><name>running</name></variable>
         </variables>
       </dataType>
 
@@ -72,6 +76,7 @@
         <variables>
           <variable><type>int</type><name>quantity</name></variable>
           <variable><type>int</type><name>production_per_unit</name></variable>
+          <variable><type>double</type><name>mean_wage</name></variable>
         </variables>
       </dataType>
 
@@ -95,8 +100,6 @@
           <variable><type>double</type><name>x_position</name></variable>
           <variable><type>double</type><name>y_position</name></variable>
           <variable><type>double</type><name>vehicle_speed</name></variable>
-          <variable><type>int</type><name>vehicle_capacity</name></variable>
-          <variable><type>double</type><name>vehicle_cost_per_day</name></variable>
           <variable><type>double</type><name>unit_cost_per_day</name></variable>
         </variables>
       </dataType>

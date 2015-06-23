@@ -197,6 +197,10 @@ int processOffers() {
     PRODUCTION_INVENTORY.array[best_offers.array[b].inventory_number].ordered +=
       best_offers.array[b].quantity;
 
+    // Set the expected unit cost, given the previous order
+    PRODUCTION_INVENTORY.array[best_offers.array[b].inventory_number].latest_unit_cost =
+      best_offers.array[b].overall_cost / ((double) best_offers.array[b].quantity);
+
     // Update funds accordingly
     FUNDING.production -= best_offers.array[b].overall_cost;
 
@@ -263,6 +267,34 @@ int updateDeliveries() {
     }
 
   }
+
+  return 0;
+
+}
+
+int updateAndStateCosts() {
+
+  // Update unit costs
+  COSTS.unit = PRODUCTION_COSTS_PER_UNIT;
+  for (int p=0; p<PRODUCTION_INVENTORY.size; p++) {
+    COSTS.unit += PRODUCTION_INVENTORY.array[p].latest_unit_cost;
+  }
+
+  // Update running costs
+  COSTS.running = HUMAN_CAPITAL.quantity * HUMAN_CAPITAL.mean_wage;
+
+  // Send costs message
+  add_division_costs_message(FIRM_ID, ID, COSTS);
+
+  return 0;
+
+}
+
+int stateOutputAvailability() {
+
+  // Send availability message
+  add_division_availability_message(FIRM_ID, ID, OUTPUT_GOOD_ID,
+    OUTPUT_INVENTORY.current, COSTS.unit, TRANSPORT_INFORMATION);
 
   return 0;
 

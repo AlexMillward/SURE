@@ -20,11 +20,11 @@
       <!-- (current, target) -->
       <output_inventory>{0,30}</output_inventory>
 
-      <!-- [(good id, current, target, ordered, restock_level, requirement_per_unit_output)] -->
-      <production_inventory>{{1, 10, 30, 0, 20, 1}}</production_inventory>
+      <!-- [(good id, current, target, ordered, restock_level, requirement_per_unit_output, latest_unit_cost)] -->
+      <production_inventory>{{1, 10, 30, 0, 20, 1, 5}}</production_inventory>
 
       <!-- (unit) -->
-      <costs>{2}</costs>
+      <costs>{2,0}</costs>
 
       <!-- (production) -->
       <funding>{10000}</funding>
@@ -32,14 +32,14 @@
       <!-- (quantity, production_per_unit) -->
       <physical_capital>{2,5}</physical_capital>
 
-      <!-- (quantity, production_per_unit) -->
-      <human_capital>{5,2}</human_capital>
+      <!-- (quantity, production_per_unit, mean_wage) -->
+      <human_capital>{5,2,0}</human_capital>
 
       <!-- leave alone, computed during iteration (length 6) -->
       <output_information>{0,0,0,0,0,0}</output_information>
 
       <!-- (position_x, position_y, vehicle_speed, vehicle_capacity, vehicle_cost_per_day, unit_cost_per_day) -->
-      <transport_information>{0,0,1,0,0,0}</transport_information>
+      <transport_information>{0,0,1,0}</transport_information>
 
       <!-- leave alone, computed during iteration (item length 4) -->
       <deliveries>{}</deliveries>
@@ -64,11 +64,11 @@
       <!-- (current, target) -->
       <output_inventory>{0,30}</output_inventory>
 
-      <!-- [(good id, current, target, ordered, restock_level, requirement_per_unit_output)] -->
+      <!-- [(good id, current, target, ordered, restock_level, requirement_per_unit_output, latest_unit_cost)] -->
       <production_inventory>{}</production_inventory>
 
       <!-- (unit) -->
-      <costs>{2}</costs>
+      <costs>{2,0}</costs>
 
       <!-- (production) -->
       <funding>{10000}</funding>
@@ -76,14 +76,14 @@
       <!-- (quantity, production_per_unit) -->
       <physical_capital>{2,5}</physical_capital>
 
-      <!-- (quantity, production_per_unit) -->
-      <human_capital>{5,2}</human_capital>
+      <!-- (quantity, production_per_unit, mean_wage) -->
+      <human_capital>{5,2,0}</human_capital>
 
       <!-- leave alone, computed during iteration (length 6) -->
       <output_information>{0,0,0,0,0,0}</output_information>
 
       <!-- (position_x, position_y, vehicle_speed, vehicle_capacity, vehicle_cost_per_day, unit_cost_per_day) -->
-      <transport_information>{2,2,1,0,0,0}</transport_information>
+      <transport_information>{2,2,1,0}</transport_information>
 
       <!-- leave alone, computed during iteration (item length 4) -->
       <deliveries>{}</deliveries>
