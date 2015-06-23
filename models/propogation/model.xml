@@ -110,6 +110,30 @@
         </variables>
       </dataType>
 
+      <dataType>
+        <name>division_offer_information</name>
+        <description>Information about an offer of output by a division</description>
+        <variables>
+          <variable><type>int</type><name>source_id</name></variable>
+          <variable><type>int</type><name>good_id</name></variable>
+          <variable><type>int</type><name>inventory_number</name></variable>
+          <variable><type>int</type><name>quantity</name></variable>
+          <variable><type>double</type><name>overall_cost</name></variable>
+          <variable><type>double</type><name>cost_before_transport</name></variable>
+          <variable><type>int</type><name>delivery_time</name></variable>
+        </variables>
+      </dataType>
+
+      <dataType>
+        <name>division_delivery</name>
+        <description>A description of a delivery being made to a division</description>
+        <variables>
+          <variable><type>int</type><name>inventory_number</name></variable>
+          <variable><type>int</type><name>quantity</name></variable>
+          <variable><type>int</type><name>time_remaining</name></variable>
+        </variables>
+      </dataType>
+
     </dataTypes>
 
   </environment>
@@ -138,6 +162,7 @@
         <variable><type>division_human_capital</type><name>human_capital</name></variable>
         <variable><type>division_output_information</type><name>output_information</name></variable>
         <variable><type>division_transport_information</type><name>transport_information</name></variable>
+        <variable><type>division_delivery_array</type><name>deliveries</name></variable>
       </memory>
 
       <functions>
@@ -167,6 +192,32 @@
           <inputs>
             <input><messageName>division_requirement</messageName></input>
           </inputs>
+          <outputs>
+            <output><messageName>division_offer</messageName></output>
+          </outputs>
+        </function>
+
+        <function>
+          <name>processOffers</name>
+          <description>Process offers made to the division</description>
+          <currentState>3</currentState>
+          <nextState>4</nextState>
+          <inputs>
+            <input><messageName>division_offer</messageName></input>
+          </inputs>
+          <outputs>
+            <output><messageName>division_acceptance</messageName></output>
+          </outputs>
+        </function>
+
+        <function>
+          <name>processAcceptances</name>
+          <description>Process offer acceptances made to the division</description>
+          <currentState>4</currentState>
+          <nextState>5</nextState>
+          <inputs>
+            <input><messageName>division_acceptance</messageName></input>
+          </inputs>
         </function>
 
       </functions>
@@ -182,9 +233,35 @@
         <variable><type>int</type><name>firm_id</name></variable>
         <variable><type>int</type><name>division_id</name></variable>
         <variable><type>int</type><name>good_id</name></variable>
+        <variable><type>int</type><name>inventory_number</name></variable>
         <variable><type>int</type><name>quantity</name></variable>
         <variable><type>double</type><name>x_position</name></variable>
         <variable><type>double</type><name>y_position</name></variable>
+      </variables>
+    </message>
+
+    <message>
+      <name>division_offer</name>
+      <variables>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>source_id</name></variable>
+        <variable><type>int</type><name>target_id</name></variable>
+        <variable><type>int</type><name>good_id</name></variable>
+        <variable><type>int</type><name>inventory_number</name></variable>
+        <variable><type>int</type><name>quantity</name></variable>
+        <variable><type>double</type><name>overall_cost</name></variable>
+        <variable><type>double</type><name>cost_before_transport</name></variable>
+        <variable><type>int</type><name>delivery_time</name></variable>
+      </variables>
+    </message>
+
+    <message>
+      <name>division_acceptance</name>
+      <variables>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>source_id</name></variable>
+        <variable><type>int</type><name>quantity</name></variable>
+        <variable><type>double</type><name>cost_before_transport</name></variable>
       </variables>
     </message>
 

@@ -20,7 +20,7 @@
   <production_inventory>{}</production_inventory>
 
   <!-- (unit) -->
-  <division_costs>{0}</division_costs>
+  <costs>{0}</costs>
 
   <!-- (production) -->
   <funding>{0}</funding>
@@ -35,6 +35,9 @@
   <output_information>{0,0,0,0,0,0}</output_information>
 
   <!-- (position_x, position_y, vehicle_speed, vehicle_capacity, vehicle_cost_per_day, unit_cost_per_day) -->
-  <transport_information>{0,0,0,0,0,0}</transport_information>
+  <transport_information>{0,0,1,0,0,0}</transport_information>
+
+  <!-- leave alone, computed during iteration (item length 4) -->
+  <deliveries>{}</deliveries>
 
 </xagent>
