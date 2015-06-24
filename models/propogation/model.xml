@@ -169,6 +169,39 @@
         </variables>
       </dataType>
 
+      <dataType>
+        <name>retailer_product</name>
+        <description>A product sold by a retailer</description>
+        <variables>
+          <variable><type>int</type><name>good_id</name></variable>
+          <!-- stock -->
+          <variable><type>int</type><name>stock</name></variable>
+          <variable><type>int</type><name>ordered</name></variable>
+          <variable><type>int</type><name>units_sold_per_day</name></variable>
+          <variable><type>int</type><name>restock_depletion_time</name></variable>
+          <variable><type>int</type><name>target_depletion_time</name></variable>
+          <!-- demand variables -->
+          <variable><type>double</type><name>percentage_profit_target</name></variable>
+          <variable><type>double</type><name>price_elasticity_of_demand</name></variable>
+          <variable><type>double</type><name>zero_demand_price</name></variable>
+        </variables>
+      </dataType>
+
+      <dataType>
+        <name>retailer_requirement</name>
+        <description>A description of one of a retailer's requirements</description>
+        <variables>
+          <variable><type>int</type><name>product_number</name></variable>
+          <variable><type>int</type><name>depletion_time</name></variable>
+          <variable><type>int</type><name>best_firm_id</name></variable>
+          <variable><type>int</type><name>best_division_id</name></variable>
+          <variable><type>double</type><name>best_price</name></variable>
+          <variable><type>int</type><name>best_quantity</name></variable>
+          <variable><type>firm_cost_information</type><name>best_cost_information</name></variable>
+          <variable><type>int</type><name>best_delivery_time</name></variable>
+        </variables>
+      </dataType>
+
     </dataTypes>
 
   </environment>
@@ -391,6 +424,19 @@
               </filter>
             </input>
           </inputs>
+          <outputs>
+            <output><messageName>firm_availability</messageName></output>
+          </outputs>
+        </function>
+
+        <function>
+          <name>processOrders</name>
+          <description>Process orders from the market made to the firm</description>
+          <currentState>2</currentState>
+          <nextState>3</nextState>
+          <inputs>
+            <input><messageName>product_order</messageName></input>
+          </inputs>
         </function>
 
       </functions>
@@ -403,7 +449,17 @@
       <description>A retailer</description>
 
       <memory>
+
+        <!-- Identity details -->
         <variable><type>int</type><name>id</name></variable>
+
+        <!-- Position details -->
+        <variable><type>double</type><name>x_position</name></variable>
+        <variable><type>double</type><name>y_position</name></variable>
+
+        <!-- == data structure == -->
+        <variable><type>retailer_product_array</type><name>retailer_products</name></variable>
+
       </memory>
 
       <function>
@@ -414,6 +470,9 @@
         <inputs>
           <input><messageName>firm_availability</messageName></input>
         </inputs>
+        <outputs>
+          <output><messageName>product_order</messageName></output>
+        </outputs>
       </function>
 
     </xagent>
@@ -489,6 +548,19 @@
         <variable><type>firm_cost_information</type><name>cost_information</name></variable>
         <variable><type>double</type><name>price</name></variable>
         <variable><type>division_transport_information</type><name>transport_information</name></variable>
+      </variables>
+    </message>
+
+    <message>
+      <name>product_order</name>
+      <variables>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>division_id</name></variable>
+        <variable><type>int</type><name>good_id</name></variable>
+        <variable><type>double</type><name>price</name></variable>
+        <variable><type>int</type><name>quantity</name></variable>
+        <variable><type>firm_cost_information</type><name>cost_information</name></variable>
+        <variable><type>int</type><name>delivery_time</name></variable>
       </variables>
     </message>
 

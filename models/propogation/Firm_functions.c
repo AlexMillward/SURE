@@ -75,3 +75,9 @@ int processOutputAvailability() {
   return 0;
 
 }
+
+int processOrders() {
+
+  return 0;
+
+}
