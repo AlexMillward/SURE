@@ -137,6 +137,38 @@
         </variables>
       </dataType>
 
+      <dataType>
+        <name>product_sales_information</name>
+        <description>Sales information about a product</description>
+        <variables>
+          <variable><type>int</type><name>expectation</name></variable>
+          <variable><type>int</type><name>so_far</name></variable>
+          <variable><type>double</type><name>expected_percentage_increase</name></variable>
+        </variables>
+      </dataType>
+
+      <dataType>
+        <name>firm_product</name>
+        <description>A product produced by a firm</description>
+        <variables>
+          <variable><type>int</type><name>good_id</name></variable>
+          <variable><type>double</type><name>running_costs_allocation</name></variable>
+          <variable><type>double</type><name>running_costs_per_unit</name></variable>
+          <variable><type>double</type><name>percentage_profit_target</name></variable>
+          <variable><type>product_sales_information</type><name>sales</name></variable>
+        </variables>
+      </dataType>
+
+      <dataType>
+        <name>firm_cost_information</name>
+        <description>Cost information for a firm</description>
+        <variables>
+          <variable><type>double</type><name>unit_cost</name></variable>
+          <variable><type>double</type><name>running_costs_per_unit</name></variable>
+          <variable><type>double</type><name>profit_estimate</name></variable>
+        </variables>
+      </dataType>
+
     </dataTypes>
 
   </environment>
@@ -283,7 +315,106 @@
           <nextState>6</nextState>
         </function>
 
+        <function>
+          <name>updateAndStateCosts</name>
+          <description>Update and state a division's costs</description>
+          <currentState>6</currentState>
+          <nextState>7</nextState>
+          <outputs>
+            <output><messageName>division_costs</messageName></output>
+          </outputs>
+        </function>
+
+        <function>
+          <name>stateOutputAvailability</name>
+          <description>State the availability of a firm's output to the market</description>
+          <currentState>7</currentState>
+          <nextState>8</nextState>
+          <outputs>
+            <output><messageName>division_availability</messageName></output>
+          </outputs>
+        </function>
+
       </functions>
+
+    </xagent>
+
+    <xagent>
+
+      <name>Firm</name>
+      <description>A firm</description>
+
+      <memory>
+
+        <!-- Identity details -->
+        <variable><type>int</type><name>id</name></variable>
+
+        <!-- Costs details -->
+        <variable><type>double</type><name>running_costs</name></variable>
+
+        <!-- == data structures == -->
+        <variable><type>firm_product_array</type><name>products</name></variable>
+
+      </memory>
+
+      <functions>
+
+        <function>
+          <name>calculateCosts</name>
+          <description>Calculate a firm's running costs and how to allocate them amongst products</description>
+          <currentState>0</currentState>
+          <nextState>1</nextState>
+          <inputs>
+            <input>
+              <messageName>division_costs</messageName>
+              <filter>
+                <lhs><value>a.id</value></lhs>
+                <op>EQ</op>
+                <rhs><value>m.firm_id</value></rhs>
+              </filter>
+            </input>
+          </inputs>
+        </function>
+
+        <function>
+          <name>processOutputAvailability</name>
+          <description>Calculate the availability of a firm's output, and the appropriate price</description>
+          <currentState>1</currentState>
+          <nextState>2</nextState>
+          <inputs>
+            <input>
+              <messageName>division_availability</messageName>
+              <filter>
+                <lhs><value>a.id</value></lhs>
+                <op>EQ</op>
+                <rhs><value>m.firm_id</value></rhs>
+              </filter>
+            </input>
+          </inputs>
+        </function>
+
+      </functions>
+
+    </xagent>
+
+    <xagent>
+
+      <name>Retailer</name>
+      <description>A retailer</description>
+
+      <memory>
+        <variable><type>int</type><name>id</name></variable>
+      </memory>
+
+      <function>
+        <name>restock</name>
+        <description>Check if restocks are required and if so handle them</description>
+        <currentState>0</currentState>
+        <nextState>1</nextState>
+        <inputs>
+          <input><messageName>firm_availability</messageName></input>
+        </inputs>
+      </function>
 
     </xagent>
 
@@ -325,6 +456,39 @@
         <variable><type>int</type><name>source_id</name></variable>
         <variable><type>int</type><name>quantity</name></variable>
         <variable><type>double</type><name>cost_before_transport</name></variable>
+      </variables>
+    </message>
+
+    <message>
+      <name>division_costs</name>
+      <variables>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>double</type><name>running_costs</name></variable>
+      </variables>
+    </message>
+
+    <message>
+      <name>division_availability</name>
+      <variables>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>division_id</name></variable>
+        <variable><type>int</type><name>good_id</name></variable>
+        <variable><type>int</type><name>quantity</name></variable>
+        <variable><type>double</type><name>unit_cost</name></variable>
+        <variable><type>division_transport_information</type><name>transport_information</name></variable>
+      </variables>
+    </message>
+
+    <message>
+      <name>firm_availability</name>
+      <variables>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>division_id</name></variable>
+        <variable><type>int</type><name>good_id</name></variable>
+        <variable><type>int</type><name>quantity</name></variable>
+        <variable><type>firm_cost_information</type><name>cost_information</name></variable>
+        <variable><type>double</type><name>price</name></variable>
+        <variable><type>division_transport_information</type><name>transport_information</name></variable>
       </variables>
     </message>
 

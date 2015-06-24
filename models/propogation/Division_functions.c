@@ -284,7 +284,7 @@ int updateAndStateCosts() {
   COSTS.running = HUMAN_CAPITAL.quantity * HUMAN_CAPITAL.mean_wage;
 
   // Send costs message
-  add_division_costs_message(FIRM_ID, ID, COSTS);
+  add_division_costs_message(FIRM_ID, COSTS.running);
 
   return 0;
 
@@ -293,8 +293,10 @@ int updateAndStateCosts() {
 int stateOutputAvailability() {
 
   // Send availability message
-  add_division_availability_message(FIRM_ID, ID, OUTPUT_GOOD_ID,
-    OUTPUT_INVENTORY.current, COSTS.unit, TRANSPORT_INFORMATION);
+  if (OUTPUT_INVENTORY.current > 0) {
+    add_division_availability_message(FIRM_ID, ID, OUTPUT_GOOD_ID,
+      OUTPUT_INVENTORY.current, COSTS.unit, TRANSPORT_INFORMATION);
+  }
 
   return 0;
 
