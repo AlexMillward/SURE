@@ -34,7 +34,8 @@ int calculateCosts() {
 int processOutputAvailability() {
 
   // Variable initialisation
-  int product_number, p;
+  int product_number, p, division_number;
+  double price;
 
   START_DIVISION_AVAILABILITY_MESSAGE_LOOP
 
@@ -57,15 +58,24 @@ int processOutputAvailability() {
       cost_information.profit_estimate = ((100 + PRODUCTS.array[p].percentage_profit_target) / 100) *
         cost_information.unit_cost * cost_information.running_costs_per_unit;
 
+      // Calculate price
+      price = cost_information.unit_cost + cost_information.running_costs_per_unit +
+        cost_information.profit_estimate
+
+      // Store division information
+      division_number = DIVISION_DETAILS.size;
+      add_firm_division_details(&DIVISION_DETAILS,
+        division_availability_message->division_id,
+        division_availability_message->quantity,
+        price,
+        &cost_information);
+
       // Broadcast update (note that cost information is meant to be hidden from the market, is provided for ease of implementation)
       add_firm_availability_message(ID,
-        division_availability_message->division_id,
+        division_number,
         division_availability_message->good_id,
         division_availability_message->quantity,
-        cost_information,
-        cost_information.unit_cost +
-          cost_information.running_costs_per_unit +
-          cost_information.profit_estimate,
+        price,
         division_availability_message->transport_information);
 
     }
@@ -77,6 +87,29 @@ int processOutputAvailability() {
 }
 
 int processOrders() {
+
+  firm_division_details * current_division_details;
+
+  START_PRODUCT_ORDER_MESSAGE_LOOP
+
+    current_division_details = DIVISION_DETAILS.array[product_order_message->division_number];
+
+    if (product_order_message->quantity < current_division_details.quantity) {
+
+      // Adjust firm funds
+      CURRENT_FUNDS += (current_division_details->price - current_division_details->unit_cost) *
+        product_order_message->quantity;
+
+      // Instruct division to adjust funds and stock
+      add_firm_instruction_message(ID, current_division_details->id,
+        product_order_message->quantity,
+        product_order_message->quantity * current_division_details->unit_cost);
+
+      // Provide order confirmation to the retailer
+
+    }
+
+  FINISH_PRODUCT_ORDER_MESSAGE_LOOP
 
   return 0;
 

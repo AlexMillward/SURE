@@ -194,11 +194,22 @@
           <variable><type>int</type><name>product_number</name></variable>
           <variable><type>int</type><name>depletion_time</name></variable>
           <variable><type>int</type><name>best_firm_id</name></variable>
-          <variable><type>int</type><name>best_division_id</name></variable>
+          <variable><type>int</type><name>best_division_number</name></variable>
           <variable><type>double</type><name>best_price</name></variable>
           <variable><type>int</type><name>best_quantity</name></variable>
           <variable><type>firm_cost_information</type><name>best_cost_information</name></variable>
           <variable><type>int</type><name>best_delivery_time</name></variable>
+        </variables>
+      </dataType>
+
+      <dataType>
+        <name>firm_division_details</name>
+        <description>Details about a division held by the firm</description>
+        <variables>
+          <variable><type>int</type><name>id</name></variable>
+          <variable><type>int</type><name>quantity</name></variable>
+          <variable><type>double</type><name>price</name></variable>
+          <variable><type>firm_cost_information</type><name>cost_information</name></variable>
         </variables>
       </dataType>
 
@@ -387,6 +398,7 @@
 
         <!-- == data structures == -->
         <variable><type>firm_product_array</type><name>products</name></variable>
+        <variable><type>firm_division_details_array</type><name>division_details</name></variable>
 
       </memory>
 
@@ -542,10 +554,9 @@
       <name>firm_availability</name>
       <variables>
         <variable><type>int</type><name>firm_id</name></variable>
-        <variable><type>int</type><name>division_id</name></variable>
+        <variable><type>int</type><name>division_number</name></variable>
         <variable><type>int</type><name>good_id</name></variable>
         <variable><type>int</type><name>quantity</name></variable>
-        <variable><type>firm_cost_information</type><name>cost_information</name></variable>
         <variable><type>double</type><name>price</name></variable>
         <variable><type>division_transport_information</type><name>transport_information</name></variable>
       </variables>
@@ -555,11 +566,11 @@
       <name>product_order</name>
       <variables>
         <variable><type>int</type><name>firm_id</name></variable>
-        <variable><type>int</type><name>division_id</name></variable>
-        <variable><type>int</type><name>good_id</name></variable>
+        <variable><type>int</type><name>division_number</name></variable>
+        <variable><type>int</type><name>buyer_id</name></variable>
+        <variable><type>int</type><name>buyer_product_number</name></variable>
         <variable><type>double</type><name>price</name></variable>
         <variable><type>int</type><name>quantity</name></variable>
-        <variable><type>firm_cost_information</type><name>cost_information</name></variable>
         <variable><type>int</type><name>delivery_time</name></variable>
       </variables>
     </message>

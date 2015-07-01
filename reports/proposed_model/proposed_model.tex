@@ -1,24 +1,89 @@
 \documentclass[11pt]{article}
-\usepackage[margin=1.4in]{geometry}
+
+\usepackage[margin=1.2in]{geometry}
+\usepackage{amsmath}
 
 \begin{document}
+	
+\section{Firm Agents}
 
-\section{Firm}
+The design of firm agents is based on the \textbf{behavioural theory of the firm}.
 
-\subsection{Process of a firm}
+\subsection{Management Division}
+The management division has three primary decisions to make:
 \begin{enumerate}
-	\item Check current running costs and calculate how much funding remains afterwards.
-	\item Wait for orders. Upon finding one check if the order can be completed by:
-	\begin{enumerate}
-		\item Asking divisions for their statuses with regards to whether they are busy and their current unit costs.
-		\item Identify whether the division should be asked to increase its output and be provided with additional funding to do so.
-	\end{enumerate}
-	\item Offer a price, wait for a response.
-	\item If an order is accepted:
-	\begin{enumerate}
-		\item Instruct firms to invest in capital or labour where appropriate.
-		\item Instruct firms to begin production.
-	\end{enumerate}
+	\item Deciding price
+	\item Deciding the output target
+	\item Deciding allocation of funds
 \end{enumerate}
+The pricing decision is as follows:
+\[
+	Price = (C_U + \frac{C_R}{O_{target}}) \times (1 + Profit\ Target)
+\]
+Where $ C_U $ are unit costs, $ C_R $ are running costs and $ O_{target} $ is the production target. Then the following process is used:
+\begin{enumerate}
+	\item If the production target has not been met, funds are allocated to trying to improve production in divisions that failed to make the target where possible. If funds do not exist to improve production, the target is revised downwards.
+	\item If the production target has been met, the production target is reconsidered. If demand has not been met the production target is revised upwards if funds allow for it. Funds from sales can be reduced to allow for this.
+	\item If the production target and demand has been met, funds are allocated to improving demand through sales expenditure, where possible.
+\end{enumerate}
+
+\subsection{Sales Division}
+The objective of the \textbf{sales} division is to increase demand for the firm's output. This is achieved by generating sales factors, for which $ n $ exist in the market the firm sells to:
+\[
+	F = \{ f_0, ..., f_n \}
+\]
+Increasing a specific sales factor bears a cost, and the total factors that can be produced for a given iteration are limited by the labour employed.
+\[
+	\sum_{i=0}^{n} f_i < L
+\]
+The factors represent what the division's employees have spent their time doing, for example a factor could represent time and money spent on client negotiations or advertising. Within the market the application of these factors has diminishing returns. The sales division is not aware of the specifics of this, and can only adapt to changes in the quantity demanded by the market. The following preference model is used, where $ i $ is used to look back $ i $ iterations to the factor value $ f_i $ and demand for the firm's goods $ D_i $.
+\[
+	P_j = \frac{1}{1 + cost(f_{j0})} \sum_{i=0}^{N} \frac{\Delta D_i}{1 + 2^i f_{ji}}
+\]
+This equation is used to decide how much of the available funding could be spent on sales factors and whether more labour is required to expand what can be achieved given current funding.
+
+\subsection{Warehouse Division}
+The objective of the warehouse division is \textbf{inventory} management. When the market orders from the firm, the warehouse division provides either the full size of the order, or as much as it is capable of providing. The warehouse records the total quantity delivered and the total deficit, that can be reported to the management when the firm's strategy is being updated.
+
+\subsection{Production Division}
+The objective of a \textbf{production} division is to provide output to another division. The division will utilise resources allocated to it so as to meet the production target, if it has the potential to. If it can not meet the target, it will maximise output given the resources available to it.
+\[
+	O = min(O_{target}, O_{potential})
+\]
+$ O_{potential} $ depends on the quantity of labour ($ L $), fixed capital ($ K_F $) and working capital ($ K_W $). Each unit of fixed capital requires up to $ L_{KF} $ units of labour to run at full capacity producing $ O_{KF} $, but can output $ (O_{KF}L) \div L_{KF} $ if $ L < L_{KF} $. Producing a unit requires a unit of each component $ i_{KWj} \in I_{KW} $ of the working capital inventory. So $ O_{potential} $ can be calculated as:
+\[
+	L_{utilised} = min(\frac{L}{L_{KF}}, K_{F}L_{KF})
+\]
+\[
+	O_{TKF} = L_{utilised} \times O_{KF},\ O_{TKW} = \underset{{i_{KWj} \in I_{KW}}}{min} i_{KWj}
+\]
+\[
+	O_{potential} = min(O_{TKF}, O_{TKW})
+\]
+Although the division can reduce $ L $ to minimise costs, it will not attempt to unless it is lacking the funds required to pay wages for the administrative period. The current deficit is defined by:
+\[
+	Deficit = F - C_{unit}O_{target} - WL
+\]
+Where $ F $ represents available funds, $ C_{unit} $ is the unit costs, and $ W $ is the average wage. For simplicity it will not initially be possible to sell capital to raise funds.
+
+\subsection{Supply Division}
+The objective of a supply division is simply to provide supply of goods that are not produced internally to production divisions. This can initially be seen as a direct conversion of funds to the required goods, however eventually firms will compete on the demand side of the market for resources they require. The supply division purchases and delivers the output target assigned to it each day.
+
+\section{Market Agent}
+
+\subsection{`Output' market}
+The `output' market simply refers to the market for the firms being modelled. A value is calculated to determine the proportion of overall demand a firm should have. This value is defined as:
+\[
+	Demand\ Score = Quality \times \frac{1}{Price} \times Sales\ Factor\ Weights
+\]
+Sales factor weights are the product of the firm's score for each sales factor:
+\[
+	SF\ Score = W_{SF} \times \frac{SF_{Firm}}{SF_{All\ Firms}}
+\]
+$ W_{SF} $ is predefined to allow some sales factors to carry more weight on average in a specific market. $ SF_{Firm} $ also decays by a predefined percentage with each iteration. The quantity of a firm's output demanded by the market on a given day is:
+\[
+	Q = \frac{DS_{Firm}}{DS_{All\ Firms}} \times Total\ Demand
+\]
+Each day total demand changes by a weighted combination of the percentage change in all firms' demand scores and predefined changes in time representing external factors.
 
 \end{document}

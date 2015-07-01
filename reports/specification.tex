@@ -1,0 +1,246 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1.2in]{geometry}
+\usepackage{amsmath}
+
+\begin{document}
+
+\tableofcontents
+
+\section{Agents}
+
+\subsection{Simple Sale-only Consumer Goods (SM)}
+
+\subsubsection{Overview}
+The simple sale-only consumer goods agent purchases goods off firms associated with it, calculating each firm's market share using marketing factors, the inverse of output price, and output quality and allocating overall quantity of demanded using this calculated market share. Overall demand is adjusted over time using a weighted combination of a predefined model, and percentage changes in the total of values used to calculate market share.
+
+\subsubsection{Functions}
+\begin{enumerate}
+	\item \textbf{SM\_require} \\
+	State requirement for a firm's output.
+	\item \textbf{SM\_confirm\_sale} \\
+	Confirm a sale by a firm to the market, including price and quantity.
+	\item \textbf{SM\_process\_factors} \\
+	Update records for a firm's sales factors.
+	\item \textbf{SM\_update\_demand} \\
+	Update each firm's demand based on sale factors, pricing and output quality.
+\end{enumerate}
+
+\subsection{Simple Purchase-only Market (PM)}
+
+\subsubsection{•}
+
+\subsubsection{Functions}
+\begin{enumerate}
+	\item \textbf{PM\_state\_price} \\
+	State the current price of the good being sold.
+	\item \textbf{PM\_order\_notification} \\
+	Notify a firm that an order has been successful, including confirmation of the price and quantity.
+	\item \textbf{PM\_update\_price}
+	Update the price based on the change in order quantity from the previous iteration and a predefined value for price elasticity.
+\end{enumerate}
+
+\subsection{Management Division (MtD)}
+
+\subsubsection{Functions}
+\begin{enumerate}
+	\item \textbf{MtD\_administrate} \\
+	Decides pricing, the output target and funds allocation.
+	\item \textbf{MtD\_process\_sale} \\
+	Process a sale, adding resulting funds.
+\end{enumerate}
+
+\subsection{Marketing Division (MgD)}
+
+\subsubsection{Functions}
+\begin{enumerate}
+	\item \textbf{MgD\_request\_labour} \\
+	Request labour from the market.
+	\item \textbf{MgD\_record\_labour} \\
+	Record the addition of labour.
+	\item \textbf{MgD\_update\_labour} \\
+	Update the quantity of labour at a given starting day (phase N) after administration.
+	\item \textbf{MgD\_strategise} \\
+	Decide how to allocate funds among sales and marketing factors.
+	\item \textbf{MgD\_apply\_factors} \\
+	Apply marketing factor values to the market.
+\end{enumerate}
+
+\subsection{Production Division (PD)}
+
+\subsubsection{Functions}
+\begin{enumerate}
+	\item \textbf{PD\_report} \\
+	Report production information to the management.
+	\item \textbf{PD\_process\_instruction} \\
+	Process instructions from the management.
+	\item \textbf{PD\_request\_labour} \\
+	Request labour from the market.
+	\item \textbf{PD\_record\_labour} \\
+	Record the addition of labour.
+	\item \textbf{PD\_update\_labour} \\
+	Update the quantity of labour at a given starting day (phase N) after administration.
+	\item \textbf{PD\_request\_fixed\_capital} \\
+	Request fixed capital from the market.
+	\item \textbf{PD\_update\_deliveries} \\
+	Update deliveries that are in progress.
+	\item \textbf{PD\_update\_fixed\_capital\_deliveries} \\
+	Update deliveries of fixed capital that are in progress.
+	\item \textbf{PD\_produce} \\
+	Produce output based on the production target as well as available resources, and deliver to either a production division or warehouse division.
+	\item \textbf{PD\_add\_delivery} \\
+	Add a delivery to tracking.
+	\item \textbf{PD\_add\_fixed\_capital\_delivery} \\
+	Add a delivery of fixed capital to tracking.
+\end{enumerate}
+
+\subsection{Supply Division (SD)}
+
+\subsubsection{Functions}
+\begin{enumerate}
+	\item \textbf{SD\_process\_instruction} \\
+	Process instructions from the management.
+	\item \textbf{SD\_update\_deliveries} \\
+	Update deliveries that are in progress.
+	\item \textbf{SD\_order} \\
+	Order supply from the market.
+	\item \textbf{SD\_process\_order\_notification} \\
+	Process confirmation of an order from the market, deliver to the appropriate production division.
+\end{enumerate}
+
+\subsection{Warehouse Division (WD)}
+
+\subsubsection{Functions}
+\begin{enumerate}
+	\item \textbf{WD\_report} \\
+	Report information about how much has sold, how much demand could not be met and how much remains to the management.
+	\item \textbf{WD\_marketing\_report} \\
+	Report to the marketing division how much has sold.
+	\item \textbf{WD\_update\_deliveries} \\
+	Update any deliveries currently in progress.
+	\item \textbf{WD\_provide} \\
+	Provide output to the market as requested, recording sale and any amount requested that could not be met.
+	\item \textbf{WD\_process\_sale} \\
+	Process a sale made to the market, adjusting stock and information the management of a funds addition.
+\end{enumerate}
+
+\section{Processes}
+
+\subsection{Monthly}
+
+\subsubsection{Firm decides pricing, output target and funds allocation}
+\begin{enumerate}
+	\item \textbf{PD\_report} \\
+	$ PD \rightarrow division\_administration\_report \rightarrow MtD $
+	\item \textbf{SD\_report} \\
+	$ SD \rightarrow division\_administration\_report \rightarrow MtD $
+	\item \textbf{WD\_report} \\
+	$ WD \rightarrow division\_inventory\_report \rightarrow MtD $
+	\item \textbf{MtD\_administrate} \\
+	$ MtD \rightarrow division\_production\_instruction \rightarrow PD,\ SD $ \\
+	$ MtD \rightarrow division\_marketing\_instruction \rightarrow MgD $
+	\item \textbf{PD\_process\_instruction}
+	\item \textbf{SD\_process\_instruction}
+	\item \textbf{MgD\_process\_instruction}
+\end{enumerate}
+
+\subsubsection{Marketing divisions decides on strategy}
+\begin{enumerate}
+	\item \textbf{WD\_marketing\_report} \\
+	$ WD \rightarrow division\_marketing\_inventory\_report \rightarrow MgD $
+	\item \textbf{MgD\_strategise}
+\end{enumerate}
+
+\subsubsection{Production divisions decide labour employment}
+\begin{enumerate}
+	\item \textbf{PM\_state\_price} \\
+	$ PM \rightarrow market\_price \rightarrow PD $
+	\item \textbf{PD\_request\_labour} \\
+	$ PD \rightarrow market\_order \rightarrow PM $
+	\item \textbf{PM\_order\_notification} \\
+	$ PM \rightarrow market\_order\_notification \rightarrow PD $
+	\item \textbf{PD\_record\_labour}
+	\item \textbf{PD\_update\_labour} - happens at phase N.
+\end{enumerate}
+
+\subsubsection{Production divisions decide fixed capital}
+\begin{enumerate}
+	\item \textbf{PM\_state\_price} \\
+	$ PM \rightarrow market\_price \rightarrow PD $
+	\item \textbf{PD\_request\_fixed\_capital} \\
+	$ PD \rightarrow market\_order \rightarrow PM $
+	\item \textbf{PM\_order\_notification} \\
+	$ PM \rightarrow market\_order\_notification \rightarrow PD $
+	\item \textbf{PD\_add\_fixed\_capital\_delivery}
+\end{enumerate}
+
+\subsubsection{Marketing division decides labour employment}
+\begin{enumerate}
+	\item \textbf{PM\_state\_price} \\
+	$ PM \rightarrow market\_price \rightarrow MgD $
+	\item \textbf{MgD\_request\_labour} \\
+	$ MgD \rightarrow market\_order \rightarrow PM $
+	\item \textbf{PM\_order\_notification} \\
+	$ PM \rightarrow market\_order\_notification \rightarrow MgD $
+	\item \textbf{MgD\_record\_labour}
+	\item \textbf{MgD\_update\_labour} - happens at phase N.
+\end{enumerate}
+
+\subsection{Daily}
+
+\subsubsection{Delivery cycle}
+\begin{enumerate}
+	\item \textbf{PD\_update\_deliveries}
+	\item \textbf{PD\_update\_fixed\_capital\_deliveries} - Must be \textbf{after} add\_fixed\_capital\_delivery
+	\item \textbf{SD\_update\_deliveries}
+	\item \textbf{WD\_update\_deliveries}
+\end{enumerate}
+
+\subsubsection{Supply cycle}
+\begin{enumerate}
+	\item \textbf{PM\_state\_price} \\
+	$ PM \rightarrow market\_price \rightarrow SD $
+	\item \textbf{SD\_order} \\
+	$ SD \rightarrow market\_order \rightarrow PM $
+	\item \textbf{PM\_order\_notification} \\
+	$ PM \rightarrow market\_order\_notification \rightarrow SD $
+	\item \textbf{SD\_process\_order\_notification} \\
+	$ SD \rightarrow division\_delivery\_notification \rightarrow PD $
+	\item \textbf{PD\_add\_delivery}
+		
+\end{enumerate}
+
+\subsubsection{Production cycle}
+\begin{enumerate}
+	\item \textbf{PD\_produce} \\
+	$ PD \rightarrow division\_delivery\_notification \rightarrow PD,\ WD $
+	\item \textbf{PD\_add\_delivery}
+	\item \textbf{WD\_add\_delivery}
+\end{enumerate}
+
+\subsubsection{Sales cycle}
+\begin{enumerate}
+	\item \textbf{SM\_require} \\
+	$ SM \rightarrow market\_requirement \rightarrow WD $
+	\item \textbf{WD\_provide} \\
+	$ WD \rightarrow market\_provision \rightarrow SM $
+	\item \textbf{SM\_confirm\_sale} \\
+	$ SM \rightarrow market\_sale\_confirmation \rightarrow WD, MtD $
+	\item \textbf{WD\_process\_sale}
+	\item \textbf{MtD\_process\_sale}
+\end{enumerate}
+
+\subsubsection{Marketing cycle}
+\begin{enumerate}
+	\item \textbf{MgD\_apply\_factors} \\
+	$ MgD \rightarrow marketing\_factors \rightarrow SM $
+	\item \textbf{SM\_process\_factors}
+\end{enumerate}
+
+\subsubsection{Market update cycle}
+\begin{enumerate}
+	\item \textbf{SM\_update\_demand}
+	\item \textbf{PM\_update\_price}
+\end{enumerate}
+
+\end{document}

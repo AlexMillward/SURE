@@ -66,11 +66,9 @@ int restock() {
 
           // Update the current requirement with the best offer that has been found
           current_requirement->best_firm_id = firm_availability_message->firm_id;
-          current_requirement->best_division_id = firm_availability_message->division_id;
+          current_requirement->best_division_number = firm_availability_message->division_number;
           current_requirement->best_price = firm_availability_message->price;
           current_requirement->best_quantity = firm_availability_message->quantity;
-          copy_firm_cost_information(&firm_availability_message->cost_information,
-            &current_requirement->best_cost_information);
           current_requirement->best_delivery_time = transport_quote.time;
 
         }
@@ -90,35 +88,40 @@ int restock() {
 
   for (r=0; r<requirements.size; r++) {
 
-    // Set up pointers
-    current_requirement = &requirements.array[r];
-    current_product = &RETAILER_PRODUCTS.array[current_requirement->product_number];
+    // Check a match was actually found
+    if (current_requirement->best_firm_id != -1) {
 
-    // Adjust price for profit target
-    adjusted_price = current_requirement->best_price *
-      ((100 + current_product->percentage_profit_target) / 100);
+      // Set up pointers
+      current_requirement = &requirements.array[r];
+      current_product = &RETAILER_PRODUCTS.array[current_requirement->product_number];
 
-    // Find the quantity demanded
-    quantity_demanded = (adjusted_price - current_product->zero_demand_price) /
-      current_product->price_elasticity_of_demand;
+      // Adjust price for profit target
+      adjusted_price = current_requirement->best_price *
+        ((100 + current_product->percentage_profit_target) / 100);
 
-    // Find the desired quantity
-    target_quantity = (quantity_demanded * current_product->target_depletion_time)
-      - current_product->stock;
+      // Find the quantity demanded
+      quantity_demanded = (adjusted_price - current_product->zero_demand_price) /
+        current_product->price_elasticity_of_demand;
 
-    // Find the amount that should actually be ordered
-    order_quantity = target_quantity < current_requirement->best_quantity ?
-      target_quantity : current_requirement->best_quantity;
+      // Find the desired quantity
+      target_quantity = (quantity_demanded * current_product->target_depletion_time)
+        - current_product->stock;
 
-    // Send the order
-    add_product_order_message(
-      current_requirement->best_firm_id,
-      current_requirement->best_division_id,
-      current_product->good_id,
-      current_requirement->best_price,
-      order_quantity,
-      current_requirement->best_cost_information,
-      current_requirement->best_delivery_time);
+      // Find the amount that should actually be ordered
+      order_quantity = target_quantity < current_requirement->best_quantity ?
+        target_quantity : current_requirement->best_quantity;
+
+      // Send the order
+      add_product_order_message(
+        current_requirement->best_firm_id,
+        current_requirement->best_division_number,
+        ID,
+        current_requirement->product_number,
+        current_requirement->best_price,
+        order_quantity,
+        current_requirement->best_delivery_time);
+
+    }
 
   }
 
