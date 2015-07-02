@@ -1,0 +1,323 @@
+<xmodel version="2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation='http://flame.ac.uk/schema/xmml_v2.xsd'>
+  <name>Firm model</name>
+  <version>1</version>
+  <description>An agent-based behavioural model of a firm, with agents representing markets operated in by the firm</description>
+
+  <environment>
+
+    <functionFiles>
+      <file>ManagementDivision_functions.c</file>
+      <file>ProductionDivision_functions.c</file>
+      <file>SalesAndMarketingDivision_functions.c</file>
+      <file>SupplyDivision_functions.c</file>
+      <file>WarehouseDivision_functions.c</file>
+    </functionFiles>
+
+    <dataTypes>
+      <dataType>
+        <name>division_production_report</name>
+        <description></description>
+        <variables>
+          <variable><type>int</type><name>division_id</name></variable>
+          <variable><type>double</type><name>cumulative_costs</name></variable>
+          <variable><type>double</type><name>suggested_funding</name></variable>
+        </variables>
+      </dataType>
+    </dataTypes>
+
+  </environment>
+
+  <agents>
+
+    <xagent>
+      <name>ManagementDivision</name>
+      <description></description>
+      <memory>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>division_production_report_array</type><name>production_reports</name></variable>
+
+        <variable><type>double</type><name>cumulative_costs</name></variable>
+        <variable><type>double</type><name>funds</name></variable>
+        <variable><type>double</type><name>funding_slack</name></variable>
+
+        <variable><type>int</type><name>cumulative_produced</name></variable>
+        <variable><type>int</type><name>cumulative_sold</name></variable>
+        <variable><type>int</type><name>cumulative_deficit</name></variable>
+        <variable><type>int</type><name>current_stock</name></variable>
+
+        <variable><type>double</type><name>price</name></variable>
+        <variable><type>double</type><name>markup</name></variable>
+
+        <variable><type>int</type><name>production_target</name></variable>
+        <variable><type>double</type><name>production_expenditure</name></variable>
+        <variable><type>double</type><name>production_funding_buffer</name></variable>
+      </memory>
+      <functions>
+        <function>
+          <name>MD_administrate</name>
+          <description></description>
+          <currentState>0</currentState>
+          <nextState>1</nextState>
+          <inputs>
+            <input>
+              <messageName>division_administration_report</messageName>
+              <filter>
+                <lhs><value>a.firm_id</value></lhs>
+                <op>EQ</op>
+                <rhs><value>m.firm_id</value></rhs>
+              </filter>
+            </input>
+            <input>
+              <messageName>division_inventory_report</messageName>
+              <filter>
+                <lhs><value>a.firm_id</value></lhs>
+                <op>EQ</op>
+                <rhs><value>m.firm_id</value></rhs>
+              </filter>
+            </input>
+          </inputs>
+          <outputs>
+            <output>
+              <messageName>division_production_instruction</messageName>
+            </output>
+            <output>
+              <messageName>division_marketing_instruction</messageName>
+            </output>
+          </outputs>
+        </function>
+      </functions>
+    </xagent>
+
+    <xagent>
+      <name>ProductionDivision</name>
+      <description></description>
+      <memory>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>division_id</name></variable>
+
+        <variable><type>int</type><name>cumulative_output</name></variable>
+        <variable><type>int</type><name>output_target</name></variable>
+
+        <variable><type>double</type><name>cumulative_costs</name></variable>
+        <variable><type>double</type><name>funds</name></variable>
+      </memory>
+      <functions>
+        <function>
+          <name>PD_report</name>
+          <description></description>
+          <currentState>0</currentState>
+          <nextState>1</nextState>
+          <outputs>
+            <output>
+              <messageName>division_administration_report</messageName>
+            </output>
+          </outputs>
+        </function>
+        <function>
+          <name>PD_process_instruction</name>
+          <description></description>
+          <currentState>1</currentState>
+          <nextState>2</nextState>
+          <inputs>
+            <input>
+              <messageName>division_production_instruction</messageName>
+              <filter>
+                <lhs>
+                  <lhs><value>a.firm_id</value></lhs>
+                  <op>EQ</op>
+                  <rhs><value>m.firm_id</value></rhs>
+                </lhs>
+                <op>AND</op>
+                <rhs>
+                  <lhs><value>a.division_id</value></lhs>
+                  <op>EQ</op>
+                  <rhs><value>m.division_id</value></rhs>
+                </rhs>
+              </filter>
+            </input>
+          </inputs>
+        </function>
+      </functions>
+    </xagent>
+
+    <xagent>
+      <name>SalesAndMarketingDivision</name>
+      <description></description>
+      <memory>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>division_id</name></variable>
+
+        <variable><type>int</type><name>cumulative_output</name></variable>
+        <variable><type>int</type><name>output_target</name></variable>
+
+        <variable><type>double</type><name>cumulative_costs</name></variable>
+        <variable><type>double</type><name>funds</name></variable>
+      </memory>
+      <functions>
+        <function>
+          <name>SMD_report</name>
+          <description></description>
+          <currentState>0</currentState>
+          <nextState>1</nextState>
+          <outputs>
+            <output>
+              <messageName>division_administration_report</messageName>
+            </output>
+          </outputs>
+        </function>
+        <function>
+          <name>SMD_process_instruction</name>
+          <description></description>
+          <currentState>1</currentState>
+          <nextState>2</nextState>
+          <inputs>
+            <input>
+              <messageName>division_marketing_instruction</messageName>
+              <filter>
+                <lhs><value>a.firm_id</value></lhs>
+                <op>EQ</op>
+                <rhs><value>m.firm_id</value></rhs>
+              </filter>
+            </input>
+          </inputs>
+        </function>
+      </functions>
+    </xagent>
+
+    <xagent>
+      <name>SupplyDivision</name>
+      <description></description>
+      <memory>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>division_id</name></variable>
+
+        <variable><type>int</type><name>cumulative_output</name></variable>
+        <variable><type>int</type><name>output_target</name></variable>
+
+        <variable><type>double</type><name>cumulative_costs</name></variable>
+        <variable><type>double</type><name>funds</name></variable>
+      </memory>
+      <functions>
+        <function>
+          <name>SD_report</name>
+          <description></description>
+          <currentState>0</currentState>
+          <nextState>1</nextState>
+          <outputs>
+            <output>
+              <messageName>division_administration_report</messageName>
+            </output>
+          </outputs>
+        </function>
+        <function>
+          <name>SD_process_instruction</name>
+          <description></description>
+          <currentState>1</currentState>
+          <nextState>2</nextState>
+          <inputs>
+            <input>
+              <messageName>division_production_instruction</messageName>
+              <filter>
+                <lhs>
+                  <lhs><value>a.firm_id</value></lhs>
+                  <op>EQ</op>
+                  <rhs><value>m.firm_id</value></rhs>
+                </lhs>
+                <op>AND</op>
+                <rhs>
+                  <lhs><value>a.division_id</value></lhs>
+                  <op>EQ</op>
+                  <rhs><value>m.division_id</value></rhs>
+                </rhs>
+              </filter>
+            </input>
+          </inputs>
+        </function>
+      </functions>
+    </xagent>
+
+    <xagent>
+      <name>WarehouseDivision</name>
+      <description></description>
+      <memory>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>division_id</name></variable>
+
+        <variable><type>double</type><name>cumulative_costs</name></variable>
+        <variable><type>double</type><name>funds</name></variable>
+
+        <variable><type>int</type><name>current_inventory</name></variable>
+        <variable><type>int</type><name>cumulative_recieved</name></variable>
+        <variable><type>int</type><name>cumulative_dispatched</name></variable>
+        <variable><type>int</type><name>cumulative_deficit</name></variable>
+      </memory>
+      <functions>
+        <function>
+          <name>WD_report</name>
+          <description></description>
+          <currentState>0</currentState>
+          <nextState>1</nextState>
+          <outputs>
+            <output>
+              <messageName>division_administration_report</messageName>
+            </output>
+            <output>
+              <messageName>division_inventory_report</messageName>
+            </output>
+          </outputs>
+        </function>
+      </functions>
+    </xagent>
+
+  </agents>
+
+  <messages>
+
+    <message>
+      <name>division_administration_report</name>
+      <description></description>
+      <variables>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>division_id</name></variable>
+        <variable><type>double</type><name>attainment</name></variable>
+        <variable><type>double</type><name>cumulative_costs</name></variable>
+        <variable><type>double</type><name>remaining_funds</name></variable>
+      </variables>
+    </message>
+
+    <message>
+      <name>division_inventory_report</name>
+      <description></description>
+      <variables>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>division_id</name></variable>
+        <variable><type>int</type><name>recieved</name></variable>
+        <variable><type>int</type><name>dispatched</name></variable>
+        <variable><type>int</type><name>deficit</name></variable>
+        <variable><type>int</type><name>remaining</name></variable>
+      </variables>
+    </message>
+
+    <message>
+      <name>division_production_instruction</name>
+      <description></description>
+      <variables>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>division_id</name></variable>
+        <variable><type>int</type><name>production_target</name></variable>
+        <variable><type>int</type><name>funding</name></variable>
+      </variables>
+    </message>
+
+    <message>
+      <name>division_marketing_instruction</name>
+      <description></description>
+      <variables>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>funding</name></variable>
+      </variables>
+    </message>
+
+  </messages>
+</xmodel>

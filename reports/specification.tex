@@ -9,10 +9,10 @@
 
 \section{Agents}
 
-\subsection{Simple Sale-only Consumer Goods (SM)}
+\subsection{Simple Sale-only Consumer Goods Market (SM)}
 
 \subsubsection{Overview}
-The simple sale-only consumer goods agent purchases goods off firms associated with it, calculating each firm's market share using marketing factors, the inverse of output price, and output quality and allocating overall quantity of demanded using this calculated market share. Overall demand is adjusted over time using a weighted combination of a predefined model, and percentage changes in the total of values used to calculate market share.
+The simple sale-only consumer goods market purchases goods off firms associated with it, calculating each firm's market share using marketing factors, the inverse of output price, and output quality and allocating overall quantity of demanded using this calculated market share. Overall demand is adjusted over time using a weighted combination of a predefined model, and percentage changes in the total of values used to calculate market share.
 
 \subsubsection{Functions}
 \begin{enumerate}
@@ -28,7 +28,11 @@ The simple sale-only consumer goods agent purchases goods off firms associated w
 
 \subsection{Simple Purchase-only Market (PM)}
 
-\subsubsection{•}
+\subsubsection{Overview}
+The simple purchase-only market is used to provide numerous market representations, such as markets for working capital sourced from outside the market currently being modelled, as well as different components of the labour market (the market for labour of a given skill set and level). The price is determined using changes in demand and a predefined price elasticity of supply.
+\[
+	\Delta P = \frac{\Delta Q}{PES}
+\] 
 
 \subsubsection{Functions}
 \begin{enumerate}
@@ -40,33 +44,44 @@ The simple sale-only consumer goods agent purchases goods off firms associated w
 	Update the price based on the change in order quantity from the previous iteration and a predefined value for price elasticity.
 \end{enumerate}
 
-\subsection{Management Division (MtD)}
+\subsection{Management Division (MD)}
+
+\subsubsection{Overview}
+The management division is the main decision making entity within a firm, responsible for the price decision, output target decision, and funding allocation decision. The price decision is made simply by taking unit costs and applying a markup percentage, which can be adjusted to improve demand. The output target decision and the funding allocation decision are combined.
 
 \subsubsection{Functions}
 \begin{enumerate}
-	\item \textbf{MtD\_administrate} \\
+	\item \textbf{MD\_administrate} \\
 	Decides pricing, the output target and funds allocation.
-	\item \textbf{MtD\_process\_sale} \\
+	\item \textbf{MD\_process\_sale} \\
 	Process a sale, adding resulting funds.
 \end{enumerate}
 
-\subsection{Marketing Division (MgD)}
+\subsection{Sales and Marketing Division (SMD)}
+
+\subsubsection{Overview}
+The objective of the sales and marketing division is to improve or at least maintain demand through the allocation of labour and funds to different marketing factors, representing different activities sales and marketing staff could spend their time and resources on (such as advertising or building customer relations). Each factor would require different funding and labour, and when applied to a purchase market have effects limited by the activities of competing firms, in that applying a large quantity of a factor to the market is less effective in improving demand if competing firms have done the same. 
 
 \subsubsection{Functions}
 \begin{enumerate}
-	\item \textbf{MgD\_request\_labour} \\
+	\item \textbf{SMD\_report} \\
+	Report division information to the management.
+	\item \textbf{SMD\_request\_labour} \\
 	Request labour from the market.
-	\item \textbf{MgD\_record\_labour} \\
+	\item \textbf{SMD\_record\_labour} \\
 	Record the addition of labour.
-	\item \textbf{MgD\_update\_labour} \\
+	\item \textbf{SMD\_update\_labour} \\
 	Update the quantity of labour at a given starting day (phase N) after administration.
-	\item \textbf{MgD\_strategise} \\
+	\item \textbf{SMD\_strategise} \\
 	Decide how to allocate funds among sales and marketing factors.
-	\item \textbf{MgD\_apply\_factors} \\
+	\item \textbf{SMD\_apply\_factors} \\
 	Apply marketing factor values to the market.
 \end{enumerate}
 
 \subsection{Production Division (PD)}
+
+\subsubsection{Overview}
+Production divisions have the objective of meeting a production target assigned by the management division, given an allocation of funding. Succeeding in this depends on the success of other  production and supply divisions in providing working capital required for production, as well as allocation of sufficient funds by the management division to meet the target to employ the sufficient labour and obtain enough fixed capital.
 
 \subsubsection{Functions}
 \begin{enumerate}
@@ -96,8 +111,13 @@ The simple sale-only consumer goods agent purchases goods off firms associated w
 
 \subsection{Supply Division (SD)}
 
+\subsubsection{Overview}
+Supply divisions are used to mediate purchases by the firm of working capital from simple purchase-only markets, for use by production divisions.
+
 \subsubsection{Functions}
 \begin{enumerate}
+	\item \textbf{SD\_report}
+	Report supply information to the management.
 	\item \textbf{SD\_process\_instruction} \\
 	Process instructions from the management.
 	\item \textbf{SD\_update\_deliveries} \\
@@ -109,6 +129,9 @@ The simple sale-only consumer goods agent purchases goods off firms associated w
 \end{enumerate}
 
 \subsection{Warehouse Division (WD)}
+
+\subsubsection{Overview}
+Warehouse divisions are used to mediate sales by the firm to sale-only consumer goods markets, holding inventory of the firm's output and taking orders for the price decided on by the management division.
 
 \subsubsection{Functions}
 \begin{enumerate}
@@ -124,31 +147,94 @@ The simple sale-only consumer goods agent purchases goods off firms associated w
 	Process a sale made to the market, adjusting stock and information the management of a funds addition.
 \end{enumerate}
 
+\section{Messages}
+\begin{enumerate}
+	\item \textbf{division\_administration\_report} \\
+	firm\_id: Integer \\
+	division\_id: Integer \\
+	output: Integer \\
+	unit\_costs: Double \\
+	running\_costs: Double
+	\item \textbf{division\_inventory\_report} \\
+	firm\_id: Integer \\
+	division\_id: Integer \\
+	sold: Integer \\
+	deficit: Integer \\
+	remaining: Integer
+	\item \textbf{division\_production\_instruction} \\
+	firm\_id: Integer \\
+	division\_id: Integer \\
+	output\_target: Integer \\
+	funding: Double
+	\item \textbf{division\_marketing\_instruction} \\
+	firm\_id: Integer \\
+	division\_id: Integer \\
+	funding: Double
+	\item \textbf{division\_marketing\_inventory\_report} \\
+	firm\_id: Integer \\
+	division\_id: Integer \\
+	sold: Integer
+	\item \textbf{market\_price} \\
+	price: Double
+	\item \textbf{market\_order} \\
+	firm\_id: Integer \\
+	division\_id: Integer \\
+	quantity: Integer
+	\item \textbf{market\_order\_notification} \\
+	firm\_id: Integer \\
+	division\_id: Integer \\
+	price: Double \\
+	quantity: Integer \\
+	delivery\_time: Integer
+	\item \textbf{division\_delivery\_notification} \\
+	firm\_id: Integer \\
+	source\_division\_id: Integer \\
+	target\_division\_id: Integer \\
+	quantity: Integer \\
+	delivery\_time: Integer
+	\item \textbf{market\_requirement} \\
+	firm\_id: Integer \\
+	quantity: Integer
+	\item \textbf{market\_provision} \\
+	firm\_id: Integer \\
+	quantity: Integer \\
+	price: Double
+	\item \textbf{market\_sale\_confirmation} \\
+	firm\_id: Integer \\
+	quantity: Integer \\
+	price: Double
+	\item \textbf{marketing\_factors} \\
+	firm\_id: Integer \\
+	factors: Double[N]
+\end{enumerate}
+
 \section{Processes}
 
 \subsection{Monthly}
 
 \subsubsection{Firm decides pricing, output target and funds allocation}
 \begin{enumerate}
+	\item \textbf{SMD\_report} \\
+	$ SMD \rightarrow division\_administration\_report \rightarrow MD $
 	\item \textbf{PD\_report} \\
-	$ PD \rightarrow division\_administration\_report \rightarrow MtD $
+	$ PD \rightarrow division\_administration\_report \rightarrow MD $
 	\item \textbf{SD\_report} \\
-	$ SD \rightarrow division\_administration\_report \rightarrow MtD $
+	$ SD \rightarrow division\_administration\_report \rightarrow MD $
 	\item \textbf{WD\_report} \\
-	$ WD \rightarrow division\_inventory\_report \rightarrow MtD $
-	\item \textbf{MtD\_administrate} \\
-	$ MtD \rightarrow division\_production\_instruction \rightarrow PD,\ SD $ \\
-	$ MtD \rightarrow division\_marketing\_instruction \rightarrow MgD $
+	$ WD \rightarrow division\_inventory\_report \rightarrow MD $
+	\item \textbf{MD\_administrate} \\
+	$ MD \rightarrow division\_production\_instruction \rightarrow PD,\ SD $ \\
+	$ MD \rightarrow division\_marketing\_instruction \rightarrow SMD $
 	\item \textbf{PD\_process\_instruction}
 	\item \textbf{SD\_process\_instruction}
-	\item \textbf{MgD\_process\_instruction}
+	\item \textbf{SMD\_process\_instruction}
 \end{enumerate}
 
 \subsubsection{Marketing divisions decides on strategy}
 \begin{enumerate}
 	\item \textbf{WD\_marketing\_report} \\
-	$ WD \rightarrow division\_marketing\_inventory\_report \rightarrow MgD $
-	\item \textbf{MgD\_strategise}
+	$ WD \rightarrow division\_marketing\_inventory\_report \rightarrow SMD $
+	\item \textbf{SMD\_strategise}
 \end{enumerate}
 
 \subsubsection{Production divisions decide labour employment}
@@ -177,13 +263,13 @@ The simple sale-only consumer goods agent purchases goods off firms associated w
 \subsubsection{Marketing division decides labour employment}
 \begin{enumerate}
 	\item \textbf{PM\_state\_price} \\
-	$ PM \rightarrow market\_price \rightarrow MgD $
-	\item \textbf{MgD\_request\_labour} \\
-	$ MgD \rightarrow market\_order \rightarrow PM $
+	$ PM \rightarrow market\_price \rightarrow SMD $
+	\item \textbf{SMD\_request\_labour} \\
+	$ SMD \rightarrow market\_order \rightarrow PM $
 	\item \textbf{PM\_order\_notification} \\
-	$ PM \rightarrow market\_order\_notification \rightarrow MgD $
-	\item \textbf{MgD\_record\_labour}
-	\item \textbf{MgD\_update\_labour} - happens at phase N.
+	$ PM \rightarrow market\_order\_notification \rightarrow SMD $
+	\item \textbf{SMD\_record\_labour}
+	\item \textbf{SMD\_update\_labour} - happens at phase N.
 \end{enumerate}
 
 \subsection{Daily}
@@ -225,15 +311,15 @@ The simple sale-only consumer goods agent purchases goods off firms associated w
 	\item \textbf{WD\_provide} \\
 	$ WD \rightarrow market\_provision \rightarrow SM $
 	\item \textbf{SM\_confirm\_sale} \\
-	$ SM \rightarrow market\_sale\_confirmation \rightarrow WD, MtD $
+	$ SM \rightarrow market\_sale\_confirmation \rightarrow WD, MD $
 	\item \textbf{WD\_process\_sale}
-	\item \textbf{MtD\_process\_sale}
+	\item \textbf{MD\_process\_sale}
 \end{enumerate}
 
 \subsubsection{Marketing cycle}
 \begin{enumerate}
-	\item \textbf{MgD\_apply\_factors} \\
-	$ MgD \rightarrow marketing\_factors \rightarrow SM $
+	\item \textbf{SMD\_apply\_factors} \\
+	$ SMD \rightarrow marketing\_factors \rightarrow SM $
 	\item \textbf{SM\_process\_factors}
 \end{enumerate}
 
