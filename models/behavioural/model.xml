@@ -6,6 +6,14 @@
 
   <environment>
 
+    <constants>
+      <variable>
+        <type>int</type>
+        <name>marketing_factor_count</name>
+        <description>The number of marketing factors</description>
+      </variable>
+    </constants>
+
     <functionFiles>
       <file>ManagementDivision_functions.c</file>
       <file>ProductionDivision_functions.c</file>
@@ -13,6 +21,24 @@
       <file>SupplyDivision_functions.c</file>
       <file>WarehouseDivision_functions.c</file>
     </functionFiles>
+
+    <timeUnits>
+      <timeUnit>
+        <name>daily</name>
+        <unit>iteration</unit>
+        <period>1</period>
+      </timeUnit>
+      <timeUnit>
+        <name>weekly</name>
+        <unit>daily</unit>
+        <period>5</period>
+      </timeUnit>
+      <timeUnit>
+        <name>monthly</name>
+        <unit>weekly</unit>
+        <period>4</period>
+      </timeUnit>
+    </timeUnits>
 
     <dataTypes>
       <dataType>
@@ -59,6 +85,12 @@
           <description></description>
           <currentState>0</currentState>
           <nextState>1</nextState>
+          <condition>
+            <time>
+              <period>monthly</period>
+              <phase>1</phase>
+            </time>
+          </condition>
           <inputs>
             <input>
               <messageName>division_administration_report</messageName>
@@ -108,6 +140,12 @@
           <description></description>
           <currentState>0</currentState>
           <nextState>1</nextState>
+          <condition>
+            <time>
+              <period>monthly</period>
+              <phase>1</phase>
+            </time>
+          </condition>
           <outputs>
             <output>
               <messageName>division_administration_report</messageName>
@@ -119,6 +157,12 @@
           <description></description>
           <currentState>1</currentState>
           <nextState>2</nextState>
+          <condition>
+            <time>
+              <period>monthly</period>
+              <phase>1</phase>
+            </time>
+          </condition>
           <inputs>
             <input>
               <messageName>division_production_instruction</messageName>
@@ -148,9 +192,6 @@
         <variable><type>int</type><name>firm_id</name></variable>
         <variable><type>int</type><name>division_id</name></variable>
 
-        <variable><type>int</type><name>cumulative_output</name></variable>
-        <variable><type>int</type><name>output_target</name></variable>
-
         <variable><type>double</type><name>cumulative_costs</name></variable>
         <variable><type>double</type><name>funds</name></variable>
       </memory>
@@ -160,6 +201,12 @@
           <description></description>
           <currentState>0</currentState>
           <nextState>1</nextState>
+          <condition>
+            <time>
+              <period>monthly</period>
+              <phase>1</phase>
+            </time>
+          </condition>
           <outputs>
             <output>
               <messageName>division_administration_report</messageName>
@@ -171,9 +218,37 @@
           <description></description>
           <currentState>1</currentState>
           <nextState>2</nextState>
+          <condition>
+            <time>
+              <period>monthly</period>
+              <phase>1</phase>
+            </time>
+          </condition>
           <inputs>
             <input>
               <messageName>division_marketing_instruction</messageName>
+              <filter>
+                <lhs><value>a.firm_id</value></lhs>
+                <op>EQ</op>
+                <rhs><value>m.firm_id</value></rhs>
+              </filter>
+            </input>
+          </inputs>
+        </function>
+        <function>
+          <name>SMD_strategise</name>
+          <description></description>
+          <currentState>2</currentState>
+          <nextState>3</nextState>
+          <condition>
+            <time>
+              <period>monthly</period>
+              <phase>1</phase>
+            </time>
+          </condition>
+          <inputs>
+            <input>
+              <messageName>division_marketing_inventory_report</messageName>
               <filter>
                 <lhs><value>a.firm_id</value></lhs>
                 <op>EQ</op>
@@ -204,6 +279,12 @@
           <description></description>
           <currentState>0</currentState>
           <nextState>1</nextState>
+          <condition>
+            <time>
+              <period>monthly</period>
+              <phase>1</phase>
+            </time>
+          </condition>
           <outputs>
             <output>
               <messageName>division_administration_report</messageName>
@@ -215,6 +296,12 @@
           <description></description>
           <currentState>1</currentState>
           <nextState>2</nextState>
+          <condition>
+            <time>
+              <period>monthly</period>
+              <phase>1</phase>
+            </time>
+          </condition>
           <inputs>
             <input>
               <messageName>division_production_instruction</messageName>
@@ -258,12 +345,35 @@
           <description></description>
           <currentState>0</currentState>
           <nextState>1</nextState>
+          <condition>
+            <time>
+              <period>monthly</period>
+              <phase>1</phase>
+            </time>
+          </condition>
           <outputs>
             <output>
               <messageName>division_administration_report</messageName>
             </output>
             <output>
               <messageName>division_inventory_report</messageName>
+            </output>
+          </outputs>
+        </function>
+        <function>
+          <name>WD_marketing_report</name>
+          <description></description>
+          <currentState>1</currentState>
+          <nextState>2</nextState>
+          <condition>
+            <time>
+              <period>monthly</period>
+              <phase>1</phase>
+            </time>
+          </condition>
+          <outputs>
+            <output>
+              <messageName>division_marketing_inventory_report</messageName>
             </output>
           </outputs>
         </function>
@@ -316,6 +426,15 @@
       <variables>
         <variable><type>int</type><name>firm_id</name></variable>
         <variable><type>int</type><name>funding</name></variable>
+      </variables>
+    </message>
+
+    <message>
+      <name>division_marketing_inventory_report</name>
+      <description></description>
+      <variables>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>double</type><name>dispatched</name></variable>
       </variables>
     </message>
 

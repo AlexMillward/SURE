@@ -24,3 +24,12 @@ int WD_report() {
   return 0;
 
 }
+
+int WD_marketing_report() {
+
+  // Send report of inventory to the marketing division
+  add_division_marketing_inventory_report_message(FIRM_ID, CUMULATIVE_DISPATCHED);
+
+  return 0;
+
+}

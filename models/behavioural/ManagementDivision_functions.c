@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdio.h>
 #include "header.h"
 #include "ManagementDivision_agent_header.h"
 
@@ -22,7 +23,7 @@ int MD_administrate() {
       add_division_production_report(&PRODUCTION_REPORTS,
         division_administration_report_message->division_id,
         division_administration_report_message->cumulative_costs,
-        (1 + FUNDING_SLACK) * (1 / division_administration_report_message->attainment) *
+        (1.0 + FUNDING_SLACK) * (1.0 / division_administration_report_message->attainment) *
           division_administration_report_message->cumulative_costs);
 
     }
@@ -46,7 +47,7 @@ int MD_administrate() {
   FINISH_DIVISION_INVENTORY_REPORT_MESSAGE_LOOP
 
   // Decide pricing
-  PRICE = (CUMULATIVE_COSTS / CUMULATIVE_PRODUCED) * MARKUP;
+  PRICE = (CUMULATIVE_COSTS / ((double) CUMULATIVE_SOLD)) * (1 + MARKUP);
 
   // Allocation
   int p;
@@ -63,7 +64,7 @@ int MD_administrate() {
     Estimate the proportion of the current production target demanded, and the
     proportion achievable with available funds
   */
-  double proportion_demanded = ((CUMULATIVE_DEFICIT + CUMULATIVE_SOLD) / CUMULATIVE_SOLD);
+  double proportion_demanded = (( (double) (CUMULATIVE_DEFICIT + CUMULATIVE_SOLD) ) / (double) CUMULATIVE_SOLD);
   double proportion_achievable = (FUNDS / funding_to_meet_target);
   double adjust_by = proportion_demanded < proportion_achievable ? proportion_demanded : proportion_achievable;
 
@@ -76,6 +77,7 @@ int MD_administrate() {
   for (p=0; p<PRODUCTION_REPORTS.size; p++) {
     division_funding = PRODUCTION_REPORTS.array[p].suggested_funding * adjust_by;
     FUNDS -= division_funding;
+    PRODUCTION_EXPENDITURE += division_funding;
     add_division_production_instruction_message(FIRM_ID, PRODUCTION_REPORTS.array[p].division_id,
       PRODUCTION_TARGET, division_funding);
   }
