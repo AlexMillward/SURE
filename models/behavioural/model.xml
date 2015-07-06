@@ -20,6 +20,8 @@
       <file>SalesAndMarketingDivision_functions.c</file>
       <file>SupplyDivision_functions.c</file>
       <file>WarehouseDivision_functions.c</file>
+      <file>SaleMarket_functions.c</file>
+      <file>PurchaseMarket_functions.c</file>
     </functionFiles>
 
     <timeUnits>
@@ -67,6 +69,19 @@
         <variables>
           <variable><type>double</type><name>proportion_sales_change</name></variable>
           <variable><type>double</type><name>factor_proportions[2]</name></variable>
+        </variables>
+      </dataType>
+
+      <dataType>
+        <name>market_participant</name>
+        <description></description>
+        <variables>
+          <variable><type>double</type><name>market_preference</name></variable>
+          <variable><type>double</type><name>price</name></variable>
+          <variable><type>double</type><name>quality</name></variable>
+          <variable><type>double</type><name>marketing_factors[2]</name></variable>
+          <variable><type>double</type><name>market_share</name></variable>
+          <variable><type>int</type><name>quantity_demanded</name></variable>
         </variables>
       </dataType>
 
@@ -407,6 +422,51 @@
               <messageName>division_marketing_inventory_report</messageName>
             </output>
           </outputs>
+        </function>
+      </functions>
+    </xagent>
+
+    <xagent>
+      <name>SaleMarket</name>
+      <description></description>
+      <memory>
+        <variable><type>market_participant_array</type><name>participants</name></variable>
+        <variable><type>double</type><name>marketing_factor_totals[2]</name></variable>
+        <variable><type>int</type><name>overall_demand</name></variable>
+        <variable><type>double</type><name>preference_total</name></variable>
+        <variable><type>double</type><name>marketing_factor_weights[2]</name></variable>
+      </memory>
+      <functions>
+        <function>
+          <name>SM_update_demand</name>
+          <description></description>
+          <currentState>0</currentState>
+          <nextState>1</nextState>
+        </function>
+      </functions>
+    </xagent>
+
+    <xagent>
+      <name>PurchaseMarket</name>
+      <description></description>
+      <memory>
+        <variable><type>int</type><name>last_sales</name></variable>
+        <variable><type>int</type><name>cumulative_sales</name></variable>
+        <variable><type>double</type><name>price</name></variable>
+        <variable><type>double</type><name>price_elasticity</name></variable>
+      </memory>
+      <functions>
+        <function>
+          <name>PM_update_price</name>
+          <description></description>
+          <currentState>0</currentState>
+          <nextState>1</nextState>
+          <condition>
+            <time>
+              <period>monthly</period>
+              <phase>1</phase>
+            </time>
+          </condition>
         </function>
       </functions>
     </xagent>
