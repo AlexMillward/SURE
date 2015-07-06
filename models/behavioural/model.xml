@@ -85,6 +85,15 @@
         </variables>
       </dataType>
 
+      <dataType>
+        <name>single_type_delivery</name>
+        <description></description>
+        <variables>
+          <variable><type>double</type><name>quantity</name></variable>
+          <variable><type>int</type><name>delivery_time</name></variable>
+        </variables>
+      </dataType>
+
     </dataTypes>
 
   </environment>
@@ -162,12 +171,17 @@
       <memory>
         <variable><type>int</type><name>firm_id</name></variable>
         <variable><type>int</type><name>division_id</name></variable>
-
         <variable><type>int</type><name>cumulative_output</name></variable>
         <variable><type>int</type><name>output_target</name></variable>
-
         <variable><type>double</type><name>cumulative_costs</name></variable>
         <variable><type>double</type><name>funds</name></variable>
+
+        <variable><type>int</type><name>fixed_capital_market_id</name></variable>
+        <variable><type>double</type><name>fixed_capital</name></variable>
+        <variable><type>double</type><name>fixed_capital_requirement_per_unit</name></variable>
+        <variable><type>double</type><name>fixed_capital_requirement_slack</name></variable>
+        <variable><type>int</type><name>fixed_capital_installation_time</name></variable>
+        <variable><type>single_type_delivery_array</type><name>fixed_capital_deliveries</name></variable>
       </memory>
       <functions>
         <function>
@@ -187,6 +201,7 @@
             </output>
           </outputs>
         </function>
+
         <function>
           <name>PD_process_instruction</name>
           <description></description>
@@ -217,6 +232,74 @@
             </input>
           </inputs>
         </function>
+
+        <function>
+          <name>PD_request_fixed_capital</name>
+          <description></description>
+          <currentState>2</currentState>
+          <nextState>3</nextState>
+          <condition>
+            <time>
+              <period>monthly</period>
+              <phase>1</phase>
+            </time>
+          </condition>
+          <inputs>
+            <input>
+              <messageName>market_price</messageName>
+              <filter>
+                <lhs><value>a.fixed_capital_market_id</value></lhs>
+                <op>EQ</op>
+                <rhs><value>m.market_id</value></rhs>
+              </filter>
+            </input>
+          </inputs>
+          <outputs>
+            <output>
+              <messageName>market_order</messageName>
+            </output>
+          </outputs>
+        </function>
+
+        <function>
+          <name>PD_add_fixed_capital_delivery</name>
+          <description></description>
+          <currentState>3</currentState>
+          <nextState>4</nextState>
+          <condition>
+            <time>
+              <period>monthly</period>
+              <phase>1</phase>
+            </time>
+          </condition>
+          <inputs>
+            <input>
+              <messageName>market_order_confirmation</messageName>
+              <filter>
+                <lhs>
+                  <lhs><value>a.fixed_capital_market_id</value></lhs>
+                  <op>EQ</op>
+                  <rhs><value>m.market_id</value></rhs>
+                </lhs>
+                <op>AND</op>
+                <rhs>
+                  <lhs>
+                    <lhs><value>a.firm_id</value></lhs>
+                    <op>EQ</op>
+                    <rhs><value>m.global_id</value></rhs>
+                  </lhs>
+                  <op>AND</op>
+                  <rhs>
+                    <lhs><value>a.division_id</value></lhs>
+                    <op>EQ</op>
+                    <rhs><value>m.internal_id</value></rhs>
+                  </rhs>
+                </rhs>
+              </filter>
+            </input>
+          </inputs>
+        </function>
+
       </functions>
     </xagent>
 
@@ -226,18 +309,14 @@
       <memory>
         <variable><type>int</type><name>firm_id</name></variable>
         <variable><type>int</type><name>division_id</name></variable>
-
         <variable><type>double</type><name>cumulative_costs</name></variable>
         <variable><type>double</type><name>funds</name></variable>
-
         <variable><type>division_marketing_factor</type><name>factors[2]</name></variable>
         <variable><type>division_sales_history_array</type><name>history</name></variable>
         <variable><type>int</type><name>history_size_limit</name></variable>
-
         <variable><type>int</type><name>change_in_sales</name></variable>
         <variable><type>double</type><name>proportion_sales_change</name></variable>
         <variable><type>int</type><name>previous_sales</name></variable>
-
         <variable><type>double</type><name>factor_alpha</name></variable>
         <variable><type>double</type><name>factor_beta</name></variable>
       </memory>
@@ -450,15 +529,17 @@
       <name>PurchaseMarket</name>
       <description></description>
       <memory>
+        <variable><type>int</type><name>market_id</name></variable>
         <variable><type>int</type><name>last_sales</name></variable>
         <variable><type>int</type><name>cumulative_sales</name></variable>
         <variable><type>double</type><name>price</name></variable>
         <variable><type>double</type><name>price_elasticity</name></variable>
       </memory>
       <functions>
+
         <function>
           <name>PM_update_price</name>
-          <description></description>
+          <description>Monthly action to limit volatility</description>
           <currentState>0</currentState>
           <nextState>1</nextState>
           <condition>
@@ -468,6 +549,41 @@
             </time>
           </condition>
         </function>
+
+        <function>
+          <name>PM_state_price</name>
+          <description></description>
+          <currentState>1</currentState>
+          <nextState>2</nextState>
+          <outputs>
+            <output>
+              <messageName>market_price</messageName>
+            </output>
+          </outputs>
+        </function>
+
+        <function>
+          <name>PM_order_confirmation</name>
+          <description></description>
+          <currentState>2</currentState>
+          <nextState>3</nextState>
+          <inputs>
+            <input>
+              <messageName>market_order</messageName>
+              <filter>
+                <lhs><value>a.market_id</value></lhs>
+                <op>EQ</op>
+                <rhs><value>m.market_id</value></rhs>
+              </filter>
+            </input>
+          </inputs>
+          <outputs>
+            <output>
+              <messageName>market_order_confirmation</messageName>
+            </output>
+          </outputs>
+        </function>
+
       </functions>
     </xagent>
 
@@ -526,6 +642,38 @@
       <variables>
         <variable><type>int</type><name>firm_id</name></variable>
         <variable><type>double</type><name>dispatched</name></variable>
+      </variables>
+    </message>
+
+    <message>
+      <name>market_price</name>
+      <description></description>
+      <variables>
+        <variable><type>int</type><name>market_id</name></variable>
+        <variable><type>double</type><name>price</name></variable>
+      </variables>
+    </message>
+
+    <message>
+      <name>market_order</name>
+      <description></description>
+      <variables>
+        <variable><type>int</type><name>market_id</name></variable>
+        <variable><type>int</type><name>global_id</name></variable>
+        <variable><type>int</type><name>internal_id</name></variable>
+        <variable><type>int</type><name>quantity</name></variable>
+      </variables>
+    </message>
+
+    <message>
+      <name>market_order_confirmation</name>
+      <description></description>
+      <variables>
+        <variable><type>int</type><name>market_id</name></variable>
+        <variable><type>int</type><name>global_id</name></variable>
+        <variable><type>int</type><name>internal_id</name></variable>
+        <variable><type>double</type><name>price</name></variable>
+        <variable><type>int</type><name>quantity</name></variable>
       </variables>
     </message>
 

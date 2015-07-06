@@ -15,12 +15,27 @@ int PM_update_price() {
 
 }
 
-/*
-int state_price() {
+int PM_state_price() {
 
+  // Send out the price to potential buyers
   add_market_price_message(MARKET_ID, PRICE);
 
   return 0;
 
 }
-*/
+
+int PM_order_confirmation() {
+
+  START_MARKET_ORDER_MESSAGE_LOOP
+
+    // Confirm order
+    add_market_order_confirmation_message(MARKET_ID,
+      market_order_message->global_id,
+      market_order_message->internal_id,
+      PRICE, market_order_message->quantity);
+
+  FINISH_MARKET_ORDER_MESSAGE_LOOP
+
+  return 0;
+
+}

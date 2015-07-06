@@ -38,7 +38,7 @@ The simple purchase-only market is used to provide numerous market representatio
 \begin{enumerate}
 	\item \textbf{PM\_state\_price} \\
 	State the current price of the good being sold.
-	\item \textbf{PM\_order\_notification} \\
+	\item \textbf{PM\_order\_confirmation} \\
 	Notify a firm that an order has been successful, including confirmation of the price and quantity.
 	\item \textbf{PM\_update\_price}
 	Update the price based on the change in order quantity from the previous iteration and a predefined value for price elasticity.
@@ -124,7 +124,7 @@ Supply divisions are used to mediate purchases by the firm of working capital fr
 	Update deliveries that are in progress.
 	\item \textbf{SD\_order} \\
 	Order supply from the market.
-	\item \textbf{SD\_process\_order\_notification} \\
+	\item \textbf{SD\_process\_order\_confirmation} \\
 	Process confirmation of an order from the market, deliver to the appropriate production division.
 \end{enumerate}
 
@@ -180,7 +180,7 @@ Warehouse divisions are used to mediate sales by the firm to sale-only consumer 
 	firm\_id: Integer \\
 	division\_id: Integer \\
 	quantity: Integer
-	\item \textbf{market\_order\_notification} \\
+	\item \textbf{market\_order\_confirmation} \\
 	firm\_id: Integer \\
 	division\_id: Integer \\
 	price: Double \\
@@ -242,27 +242,27 @@ Warehouse divisions are used to mediate sales by the firm to sale-only consumer 
 	\item \textbf{PM\_update\_price}
 \end{enumerate}
 
-\subsubsection{Production divisions decide labour employment}
-\begin{enumerate}
-	\item \textbf{PM\_state\_price} \\
-	$ PM \rightarrow market\_price \rightarrow PD $
-	\item \textbf{PD\_request\_labour} \\
-	$ PD \rightarrow market\_order \rightarrow PM $
-	\item \textbf{PM\_order\_notification} \\
-	$ PM \rightarrow market\_order\_notification \rightarrow PD $
-	\item \textbf{PD\_record\_labour}
-	\item \textbf{PD\_update\_labour} - happens at phase N.
-\end{enumerate}
-
 \subsubsection{Production divisions decide fixed capital}
 \begin{enumerate}
 	\item \textbf{PM\_state\_price} \\
 	$ PM \rightarrow market\_price \rightarrow PD $
 	\item \textbf{PD\_request\_fixed\_capital} \\
 	$ PD \rightarrow market\_order \rightarrow PM $
-	\item \textbf{PM\_order\_notification} \\
-	$ PM \rightarrow market\_order\_notification \rightarrow PD $
+	\item \textbf{PM\_order\_confirmation} \\
+	$ PM \rightarrow market\_order\_confirmation \rightarrow PD $
 	\item \textbf{PD\_add\_fixed\_capital\_delivery}
+\end{enumerate}
+
+\subsubsection{Production divisions decide labour employment}
+\begin{enumerate}
+	\item \textbf{PM\_state\_price} \\
+	$ PM \rightarrow market\_price \rightarrow PD $
+	\item \textbf{PD\_request\_labour} \\
+	$ PD \rightarrow market\_order \rightarrow PM $
+	\item \textbf{PM\_order\_confirmation} \\
+	$ PM \rightarrow market\_order\_confirmation \rightarrow PD $
+	\item \textbf{PD\_record\_labour}
+	\item \textbf{PD\_update\_labour} - happens at phase N.
 \end{enumerate}
 
 \subsubsection{Marketing division decides labour employment}
@@ -271,8 +271,8 @@ Warehouse divisions are used to mediate sales by the firm to sale-only consumer 
 	$ PM \rightarrow market\_price \rightarrow SMD $
 	\item \textbf{SMD\_request\_labour} \\
 	$ SMD \rightarrow market\_order \rightarrow PM $
-	\item \textbf{PM\_order\_notification} \\
-	$ PM \rightarrow market\_order\_notification \rightarrow SMD $
+	\item \textbf{PM\_order\_confirmation} \\
+	$ PM \rightarrow market\_order\_confirmation \rightarrow SMD $
 	\item \textbf{SMD\_record\_labour}
 	\item \textbf{SMD\_update\_labour} - happens at phase N.
 \end{enumerate}
@@ -282,6 +282,13 @@ Warehouse divisions are used to mediate sales by the firm to sale-only consumer 
 \subsubsection{Sale market update cycle}
 \begin{enumerate}
 	\item \textbf{SM\_update\_demand}
+\end{enumerate}
+
+\subsubsection{Firm update cycle}
+\begin{enumerate}
+	\item \textbf{PD\_fixed\_capital\_depreciation}
+	\item \textbf{PD\_update\_labour}
+	\item \textbf{SMD\_update\_labour}
 \end{enumerate}
 
 \subsubsection{Delivery cycle}
@@ -298,9 +305,9 @@ Warehouse divisions are used to mediate sales by the firm to sale-only consumer 
 	$ PM \rightarrow market\_price \rightarrow SD $
 	\item \textbf{SD\_order} \\
 	$ SD \rightarrow market\_order \rightarrow PM $
-	\item \textbf{PM\_order\_notification} \\
-	$ PM \rightarrow market\_order\_notification \rightarrow SD $
-	\item \textbf{SD\_process\_order\_notification} \\
+	\item \textbf{PM\_order\_confirmation} \\
+	$ PM \rightarrow market\_order\_confirmation \rightarrow SD $
+	\item \textbf{SD\_process\_order\_confirmation} \\
 	$ SD \rightarrow division\_delivery\_notification \rightarrow PD $
 	\item \textbf{PD\_add\_delivery}
 		
