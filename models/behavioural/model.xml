@@ -41,6 +41,7 @@
     </timeUnits>
 
     <dataTypes>
+
       <dataType>
         <name>division_production_report</name>
         <description></description>
@@ -50,6 +51,25 @@
           <variable><type>double</type><name>suggested_funding</name></variable>
         </variables>
       </dataType>
+
+      <dataType>
+        <name>division_marketing_factor</name>
+        <description></description>
+        <variables>
+          <variable><type>double</type><name>cost</name></variable>
+          <variable><type>double</type><name>available</name></variable>
+        </variables>
+      </dataType>
+
+      <dataType>
+        <name>division_sales_history</name>
+        <description></description>
+        <variables>
+          <variable><type>double</type><name>proportion_sales_change</name></variable>
+          <variable><type>double</type><name>factor_proportions[2]</name></variable>
+        </variables>
+      </dataType>
+
     </dataTypes>
 
   </environment>
@@ -194,6 +214,17 @@
 
         <variable><type>double</type><name>cumulative_costs</name></variable>
         <variable><type>double</type><name>funds</name></variable>
+
+        <variable><type>division_marketing_factor</type><name>factors[2]</name></variable>
+        <variable><type>division_sales_history_array</type><name>history</name></variable>
+        <variable><type>int</type><name>history_size_limit</name></variable>
+
+        <variable><type>int</type><name>change_in_sales</name></variable>
+        <variable><type>double</type><name>proportion_sales_change</name></variable>
+        <variable><type>int</type><name>previous_sales</name></variable>
+
+        <variable><type>double</type><name>factor_alpha</name></variable>
+        <variable><type>double</type><name>factor_beta</name></variable>
       </memory>
       <functions>
         <function>
