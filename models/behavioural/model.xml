@@ -89,8 +89,27 @@
         <name>single_type_record</name>
         <description></description>
         <variables>
-          <variable><type>double</type><name>quantity</name></variable>
+          <variable><type>int</type><name>quantity</name></variable>
           <variable><type>int</type><name>time</name></variable>
+        </variables>
+      </dataType>
+
+      <dataType>
+        <name>delivery</name>
+        <description></description>
+        <variables>
+          <variable><type>int</type><name>quantity</name></variable>
+          <variable><type>int</type><name>delivery_time</name></variable>
+          <variable><type>int</type><name>source_id</name></variable>
+        </variables>
+      </dataType>
+
+      <dataType>
+        <name>working_capital_inventory_component</name>
+        <description></description>
+        <variables>
+          <variable><type>int</type><name>source_id</name></variable>
+          <variable><type>int</type><name>quantity</name></variable>
         </variables>
       </dataType>
 
@@ -178,7 +197,9 @@
 
         <variable><type>int</type><name>fixed_capital_market_id</name></variable>
         <variable><type>double</type><name>fixed_capital</name></variable>
-        <variable><type>double</type><name>fixed_capital_requirement_per_unit</name></variable>
+
+        <variable><type>double</type><name>daily_unit_fixed_capital_output</name></variable>
+
         <variable><type>double</type><name>fixed_capital_requirement_slack</name></variable>
         <variable><type>int</type><name>fixed_capital_installation_time</name></variable>
         <variable><type>single_type_record_array</type><name>fixed_capital_deliveries</name></variable>
@@ -190,6 +211,12 @@
         <variable><type>int</type><name>labour_employment_phase</name></variable>
         <variable><type>single_type_record_array</type><name>upcoming_labour_contracts</name></variable>
         <variable><type>single_type_record_array</type><name>existing_labour_contracts</name></variable>
+
+        <variable><type>delivery_array</type><name>division_deliveries</name></variable>
+        <variable><type>working_capital_inventory_component_array</type><name>working_capital_inventory</name></variable>
+
+        <variable><type>int</type><name>delivers_to_id</name></variable>
+        <variable><type>int</type><name>time_to_deliver</name></variable>
       </memory>
       <functions>
         <function>
@@ -389,6 +416,48 @@
           </inputs>
         </function>
 
+        <function>
+          <name>PD_update_deliveries</name>
+          <description></description>
+          <currentState>8</currentState>
+          <nextState>9</nextState>
+        </function>
+
+        <function>
+          <name>PD_produce</name>
+          <description></description>
+          <currentState>9</currentState>
+          <nextState>10</nextState>
+          <outputs>
+            <messageName>division_delivery_notification</messageName>
+          </outputs>
+        </function>
+
+        <function>
+          <name>PD_add_delivery</name>
+          <description></description>
+          <currentState>10</currentState>
+          <nextState>11</nextState>
+          <inputs>
+            <input>
+              <messageName>division_delivery_notification</messageName>
+              <filter>
+                <lhs>
+                  <lhs><value>a.firm_id</value></lhs>
+                  <op>EQ</op>
+                  <rhs><value>m.firm_id</value></rhs>
+                </lhs>
+                <op>AND</op>
+                <rhs>
+                  <lhs><value>a.division_id</value></lhs>
+                  <op>EQ</op>
+                  <rhs><value>m.target_division_id</value></rhs>
+                </rhs>
+              </filter>
+            </input>
+          </inputs>
+        </function>
+
       </functions>
     </xagent>
 
@@ -481,13 +550,19 @@
         <variable><type>int</type><name>firm_id</name></variable>
         <variable><type>int</type><name>division_id</name></variable>
 
+        <variable><type>int</type><name>source_market_id</name></variable>
+        <variable><type>int</type><name>parent_division_id</name></variable>
+
         <variable><type>int</type><name>cumulative_output</name></variable>
         <variable><type>int</type><name>output_target</name></variable>
 
         <variable><type>double</type><name>cumulative_costs</name></variable>
         <variable><type>double</type><name>funds</name></variable>
+
+        <variable><type>int</type><name>delivery_time</name></variable>
       </memory>
       <functions>
+
         <function>
           <name>SD_report</name>
           <description></description>
@@ -505,6 +580,7 @@
             </output>
           </outputs>
         </function>
+
         <function>
           <name>SD_process_instruction</name>
           <description></description>
@@ -535,6 +611,67 @@
             </input>
           </inputs>
         </function>
+
+        <function>
+          <name>SD_order</name>
+          <description></description>
+          <currentState>2</currentState>
+          <nextState>3</nextState>
+          <inputs>
+            <input>
+              <messageName>market_price</messageName>
+              <filter>
+                <lhs><value>a.source_market_id</value></lhs>
+                <op>EQ</op>
+                <rhs><value>m.market_id</value></rhs>
+              </filter>
+            </input>
+          </inputs>
+          <outputs>
+            <output>
+              <messageName>market_order</messageName>
+            </output>
+          </outputs>
+        </function>
+
+        <function>
+          <name>SD_process_order_confirmation</name>
+          <description></description>
+          <currentState>3</currentState>
+          <nextState>4</nextState>
+          <inputs>
+            <input>
+              <messageName>market_order_confirmation</messageName>
+              <filter>
+                <lhs>
+                  <lhs><value>a.source_market_id</value></lhs>
+                  <op>EQ</op>
+                  <rhs><value>m.market_id</value></rhs>
+                </lhs>
+                <op>AND</op>
+                <rhs>
+                  <lhs>
+                    <lhs><value>a.firm_id</value></lhs>
+                    <op>EQ</op>
+                    <rhs><value>m.global_id</value></rhs>
+                  </lhs>
+                  <op>AND</op>
+                  <rhs>
+                    <lhs><value>a.division_id</value></lhs>
+                    <op>EQ</op>
+                    <rhs><value>m.internal_id</value></rhs>
+                  </rhs>
+                </rhs>
+              </filter>
+            </input>
+          </inputs>
+          <outputs>
+            <output>
+              <messageName>division_delivery_notification</messageName>
+            </output>
+          </outputs>
+        </function>
+
       </functions>
     </xagent>
 
@@ -552,8 +689,11 @@
         <variable><type>int</type><name>cumulative_recieved</name></variable>
         <variable><type>int</type><name>cumulative_dispatched</name></variable>
         <variable><type>int</type><name>cumulative_deficit</name></variable>
+
+        <variable><type>single_type_record_array</type><name>deliveries</name></variable>
       </memory>
       <functions>
+
         <function>
           <name>WD_report</name>
           <description></description>
@@ -574,6 +714,7 @@
             </output>
           </outputs>
         </function>
+
         <function>
           <name>WD_marketing_report</name>
           <description></description>
@@ -591,6 +732,39 @@
             </output>
           </outputs>
         </function>
+
+        <function>
+          <name>WD_update_deliveries</name>
+          <description></description>
+          <currentState>2</currentState>
+          <nextState>3</nextState>
+        </function>
+
+        <function>
+          <name>WD_add_delivery</name>
+          <description></description>
+          <currentState>3</currentState>
+          <nextState>4</nextState>
+          <inputs>
+            <input>
+              <messageName>division_delivery_notification</messageName>
+              <filter>
+                <lhs>
+                  <lhs><value>a.firm_id</value></lhs>
+                  <op>EQ</op>
+                  <rhs><value>m.firm_id</value></rhs>
+                </lhs>
+                <op>AND</op>
+                <rhs>
+                  <lhs><value>a.division_id</value></lhs>
+                  <op>EQ</op>
+                  <rhs><value>m.target_division_id</value></rhs>
+                </rhs>
+              </filter>
+            </input>
+          </inputs>
+        </function>
+
       </functions>
     </xagent>
 
@@ -763,6 +937,18 @@
         <variable><type>int</type><name>internal_id</name></variable>
         <variable><type>double</type><name>price</name></variable>
         <variable><type>int</type><name>quantity</name></variable>
+      </variables>
+    </message>
+
+    <message>
+      <name>division_delivery_notification</name>
+      <description></description>
+      <variables>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>source_division_id</name></variable>
+        <variable><type>int</type><name>target_division_id</name></variable>
+        <variable><type>int</type><name>quantity</name></variable>
+        <variable><type>int</type><name>delivery_time</name></variable>
       </variables>
     </message>
 

@@ -33,3 +33,43 @@ int WD_marketing_report() {
   return 0;
 
 }
+
+int WD_update_deliveries() {
+
+  int d=0;
+  while (d<DELIVERIES.size) {
+
+    // Reduce counter until arrival
+    DELIVERIES.array[d].time--;
+
+    // Check if the delivery has arrived
+    if (DELIVERIES.array[d].time <= 0) {
+
+      // Update the inventory
+      CURRENT_INVENTORY += DELIVERIES.array[d].quantity;
+
+      // Remove the delivery from tracking
+      remove_single_type_record(&DELIVERIES, d);
+
+    } else {
+      d++;
+    }
+
+  }
+
+  return 0;
+
+}
+
+int WD_add_delivery() {
+
+  // Add deliveries
+  START_DIVISION_DELIVERY_NOTIFICATION_MESSAGE_LOOP
+    add_single_type_record(&DELIVERIES,
+      division_delivery_notification_message->quantity,
+      division_delivery_notification_message->delivery_time);
+  FINISH_DIVISION_DELIVERY_NOTIFICATION_MESSAGE_LOOP
+
+  return 0;
+
+}

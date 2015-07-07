@@ -47,7 +47,7 @@ int PD_request_fixed_capital() {
 
     // Get the daily requirement
     double requirement;
-    requirement = (((double) OUTPUT_TARGET) / 20) * FIXED_CAPITAL_REQUIREMENT_PER_UNIT *
+    requirement = ((((double) OUTPUT_TARGET) / 20) / DAILY_UNIT_FIXED_CAPITAL_OUTPUT) *
       (1 + FIXED_CAPITAL_REQUIREMENT_SLACK);
 
     // Check additional fixed capital is actually required
@@ -73,8 +73,10 @@ int PD_add_fixed_capital_delivery() {
   START_MARKET_ORDER_CONFIRMATION_MESSAGE_LOOP
 
     // Adjust available funds
-    FUNDS -= market_order_confirmation_message->price *
+    double expenditure = market_order_confirmation_message->price *
       market_order_confirmation_message->quantity;
+    FUNDS -= expenditure;
+    CUMULATIVE_COSTS += expenditure;
 
     // Add the delivery
     add_single_type_record(&FIXED_CAPITAL_DELIVERIES,
@@ -111,7 +113,7 @@ int PD_request_labour() {
     int fixed_capital_potential = floor(LABOUR_PER_UNIT_FIXED_CAPITAL * eventual_fixed_capital);
 
     // Find desirable based on output target (TODO : confirm equation)
-    int desirable = ceil(((double) OUTPUT_TARGET / 20) * FIXED_CAPITAL_REQUIREMENT_PER_UNIT *
+    int desirable = ceil((((double) OUTPUT_TARGET / 20) / DAILY_UNIT_FIXED_CAPITAL_OUTPUT) *
       LABOUR_PER_UNIT_FIXED_CAPITAL * (1 + LABOUR_REQUIREMENT_SLACK));
 
     // Decide on the quantity to employ
@@ -131,8 +133,10 @@ int PD_record_labour() {
   START_MARKET_ORDER_CONFIRMATION_MESSAGE_LOOP
 
     // Adjust available funds
-    FUNDS -= market_order_confirmation_message->price *
+    double expenditure = market_order_confirmation_message->price *
       market_order_confirmation_message->quantity;
+    FUNDS -= expenditure;
+    CUMULATIVE_COSTS += expenditure;
 
     // Record the labour addition
     add_single_type_record(&UPCOMING_LABOUR_CONTRACTS,
@@ -220,6 +224,96 @@ int PD_update_labour() {
     }
 
   }
+
+  return 0;
+
+}
+
+int PD_update_deliveries() {
+
+  int d=0;
+  while (d<DIVISION_DELIVERIES.size) {
+
+    // Reduce counter to arrival
+    DIVISION_DELIVERIES.array[d].delivery_time--;
+
+    // Check if delivery has arrived
+    if (DIVISION_DELIVERIES.array[d].delivery_time <= 0) {
+
+      // Add to correct working capital inventory
+      for (int w=0; w<WORKING_CAPITAL_INVENTORY.size; w++) {
+
+        // Update appropriate inventory
+        if (WORKING_CAPITAL_INVENTORY.array[w].source_id ==
+          DIVISION_DELIVERIES.array[d].source_id)
+        {
+          WORKING_CAPITAL_INVENTORY.array[w].quantity += DIVISION_DELIVERIES.array[d].quantity;
+        }
+
+      }
+
+      // Remove the delivery from tracking
+      remove_delivery(&DIVISION_DELIVERIES, d);
+
+    } else {
+      d++;
+    }
+
+  }
+
+  return 0;
+
+}
+
+int PD_produce() {
+
+  int e, w;
+
+  // Calculate output potential given labour and fixed capital constraints
+  int labour = 0;
+  for (e=0; e<EXISTING_LABOUR_CONTRACTS.size; e++) {
+    labour += EXISTING_LABOUR_CONTRACTS.array[e].quantity;
+  }
+  double effective_fixed_capital = ((double) labour) / LABOUR_PER_UNIT_FIXED_CAPITAL;
+  int fixed_capital_potential = floor(effective_fixed_capital * DAILY_UNIT_FIXED_CAPITAL_OUTPUT);
+
+  // Calculate output potential given working capital constraints
+  int working_capital_potential = -1;
+  for (w=0; w<WORKING_CAPITAL_INVENTORY.size; w++) {
+    if (WORKING_CAPITAL_INVENTORY.array[w].quantity < working_capital_potential ||
+      working_capital_potential == -1)
+    {
+      working_capital_potential = WORKING_CAPITAL_INVENTORY.array[w].quantity;
+    }
+  }
+
+  // Work out overall output potential and produce
+  int output = fixed_capital_potential < working_capital_potential ?
+    fixed_capital_potential : working_capital_potential;
+  CUMULATIVE_OUTPUT += output;
+
+  // Adjust working inventory accordingly
+  for (w=0; w<WORKING_CAPITAL_INVENTORY.size; w++) {
+    WORKING_CAPITAL_INVENTORY.array[w].quantity -= output;
+  }
+
+  // Send off the output
+  add_division_delivery_notification_message(FIRM_ID, DIVISION_ID, DELIVERS_TO_ID,
+    output, TIME_TO_DELIVER);
+
+  return 0;
+
+}
+
+int PD_add_delivery() {
+
+  // Add deliveries
+  START_DIVISION_DELIVERY_NOTIFICATION_MESSAGE_LOOP
+    add_delivery(&DIVISION_DELIVERIES,
+      division_delivery_notification_message->quantity,
+      division_delivery_notification_message->delivery_time,
+      division_delivery_notification_message->source_division_id);
+  FINISH_DIVISION_DELIVERY_NOTIFICATION_MESSAGE_LOOP
 
   return 0;
 
