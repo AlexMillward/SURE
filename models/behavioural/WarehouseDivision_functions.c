@@ -47,6 +47,7 @@ int WD_update_deliveries() {
 
       // Update the inventory
       CURRENT_INVENTORY += DELIVERIES.array[d].quantity;
+      CUMULATIVE_RECIEVED += DELIVERIES.array[d].quantity;
 
       // Remove the delivery from tracking
       remove_single_type_record(&DELIVERIES, d);
@@ -69,6 +70,18 @@ int WD_add_delivery() {
       division_delivery_notification_message->quantity,
       division_delivery_notification_message->delivery_time);
   FINISH_DIVISION_DELIVERY_NOTIFICATION_MESSAGE_LOOP
+
+  return 0;
+
+}
+
+int WD_provide() {
+
+  return 0;
+
+}
+
+int WD_process_sale() {
 
   return 0;
 

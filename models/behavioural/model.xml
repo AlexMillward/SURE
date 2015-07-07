@@ -76,6 +76,7 @@
         <name>market_participant</name>
         <description></description>
         <variables>
+          <variable><type>int</type><name>firm_id</name></variable>
           <variable><type>double</type><name>market_preference</name></variable>
           <variable><type>double</type><name>price</name></variable>
           <variable><type>double</type><name>quality</name></variable>
@@ -479,6 +480,7 @@
         <variable><type>double</type><name>factor_beta</name></variable>
       </memory>
       <functions>
+
         <function>
           <name>SMD_report</name>
           <description></description>
@@ -496,6 +498,7 @@
             </output>
           </outputs>
         </function>
+
         <function>
           <name>SMD_process_instruction</name>
           <description></description>
@@ -518,6 +521,7 @@
             </input>
           </inputs>
         </function>
+
         <function>
           <name>SMD_strategise</name>
           <description></description>
@@ -540,6 +544,7 @@
             </input>
           </inputs>
         </function>
+
       </functions>
     </xagent>
 
@@ -765,6 +770,45 @@
           </inputs>
         </function>
 
+        <function>
+          <name>WD_provide</name>
+          <description></description>
+          <currentState>4</currentState>
+          <nextState>5</nextState>
+          <inputs>
+            <input>
+              <messageName>market_requirement</messageName>
+              <filter>
+                <lhs><value>a.firm_id</value></lhs>
+                <op>EQ</op>
+                <rhs><value>m.firm_id</value></rhs>
+              </filter>
+            </input>
+          </inputs>
+          <outputs>
+            <output>
+              <messageName>market_provision</messageName>
+            </output>
+          </outputs>
+        </function>
+
+        <function>
+          <name>WD_process_sale</name>
+          <description></description>
+          <currentState>5</currentState>
+          <nextState>6</nextState>
+          <inputs>
+            <input>
+              <messageName>market_sale_confirmation</messageName>
+              <filter>
+                <lhs><value>a.firm_id</value></lhs>
+                <op>EQ</op>
+                <rhs><value>m.firm_id</value></rhs>
+              </filter>
+            </input>
+          </inputs>
+        </function>
+
       </functions>
     </xagent>
 
@@ -772,6 +816,7 @@
       <name>SaleMarket</name>
       <description></description>
       <memory>
+        <variable><type>int</type><name>market_id</name></variable>
         <variable><type>market_participant_array</type><name>participants</name></variable>
         <variable><type>double</type><name>marketing_factor_totals[2]</name></variable>
         <variable><type>int</type><name>overall_demand</name></variable>
@@ -779,13 +824,50 @@
         <variable><type>double</type><name>marketing_factor_weights[2]</name></variable>
       </memory>
       <functions>
+
         <function>
           <name>SM_update_demand</name>
           <description></description>
           <currentState>0</currentState>
           <nextState>1</nextState>
         </function>
+
+        <function>
+          <name>SM_require</name>
+          <description></description>
+          <currentState>1</currentState>
+          <nextState>2</nextState>
+          <outputs>
+            <output>
+              <messageName>market_requirement</messageName>
+            </output>
+          </outputs>
+        </function>
+
+        <function>
+          <name>SM_confirm_sale</name>
+          <description></description>
+          <currentState>2</currentState>
+          <nextState>3</nextState>
+          <inputs>
+            <input>
+              <messageName>market_provision</messageName>
+              <filter>
+                <lhs><value>a.market_id</value></lhs>
+                <op>EQ</op>
+                <rhs><value>m.market_id</value></rhs>
+              </filter>
+            </input>
+          </inputs>
+          <outputs>
+            <output>
+              <messageName>market_sale_confirmation</messageName>
+            </output>
+          </outputs>
+        </function>
+
       </functions>
+
     </xagent>
 
     <xagent>
@@ -949,6 +1031,38 @@
         <variable><type>int</type><name>target_division_id</name></variable>
         <variable><type>int</type><name>quantity</name></variable>
         <variable><type>int</type><name>delivery_time</name></variable>
+      </variables>
+    </message>
+
+    <message>
+      <name>market_requirement</name>
+      <description></description>
+      <variables>
+        <variable><type>int</type><name>market_id</name></variable>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>quantity</name></variable>
+      </variables>
+    </message>
+
+    <message>
+      <name>market_provision</name>
+      <description></description>
+      <variables>
+        <variable><type>int</type><name>market_id</name></variable>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>quantity</name></variable>
+        <variable><type>double</type><name>price</name></variable>
+      </variables>
+    </message>
+
+    <message>
+      <name>market_sale_confirmation</name>
+      <description></description>
+      <variables>
+        <variable><type>int</type><name>market_id</name></variable>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>int</type><name>quantity</name></variable>
+        <variable><type>double</type><name>price</name></variable>
       </variables>
     </message>
 

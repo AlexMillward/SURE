@@ -52,3 +52,21 @@ int SM_update_demand() {
   return 0;
 
 }
+
+int SM_require() {
+
+  // Send market requirements to firms
+  for (int p=0; p<PARTICIPANTS.size; p++) {
+    add_market_requirement_message(MARKET_ID, PARTICIPANTS.array[p].firm_id,
+      PARTICIPANTS.array[p].quantity_demanded);
+  }
+
+  return 0;
+
+}
+
+int SM_confirm_sale() {
+
+  return 0;
+
+}
