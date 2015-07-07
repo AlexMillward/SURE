@@ -182,12 +182,14 @@
         <variable><type>double</type><name>fixed_capital_requirement_slack</name></variable>
         <variable><type>int</type><name>fixed_capital_installation_time</name></variable>
         <variable><type>single_type_record_array</type><name>fixed_capital_deliveries</name></variable>
+        <variable><type>double</type><name>fixed_capital_depreciation_rate</name></variable>
 
         <variable><type>int</type><name>labour_market_id</name></variable>
         <variable><type>double</type><name>labour_per_unit_fixed_capital</name></variable>
         <variable><type>double</type><name>labour_requirement_slack</name></variable>
         <variable><type>int</type><name>labour_employment_phase</name></variable>
         <variable><type>single_type_record_array</type><name>upcoming_labour_contracts</name></variable>
+        <variable><type>single_type_record_array</type><name>existing_labour_contracts</name></variable>
       </memory>
       <functions>
         <function>
@@ -240,10 +242,24 @@
         </function>
 
         <function>
-          <name>PD_request_fixed_capital</name>
+          <name>PD_update_fixed_capital</name>
           <description></description>
           <currentState>2</currentState>
           <nextState>3</nextState>
+        </function>
+
+        <function>
+          <name>PD_update_labour</name>
+          <description></description>
+          <currentState>3</currentState>
+          <nextState>4</nextState>
+        </function>
+
+        <function>
+          <name>PD_request_fixed_capital</name>
+          <description></description>
+          <currentState>4</currentState>
+          <nextState>5</nextState>
           <condition>
             <time>
               <period>monthly</period>
@@ -270,8 +286,8 @@
         <function>
           <name>PD_request_labour</name>
           <description></description>
-          <currentState>3</currentState>
-          <nextState>4</nextState>
+          <currentState>5</currentState>
+          <nextState>6</nextState>
           <condition>
             <time>
               <period>monthly</period>
@@ -298,8 +314,8 @@
         <function>
           <name>PD_add_fixed_capital_delivery</name>
           <description></description>
-          <currentState>4</currentState>
-          <nextState>5</nextState>
+          <currentState>6</currentState>
+          <nextState>7</nextState>
           <condition>
             <time>
               <period>monthly</period>
@@ -337,8 +353,8 @@
         <function>
           <name>PD_record_labour</name>
           <description></description>
-          <currentState>5</currentState>
-          <nextState>6</nextState>
+          <currentState>7</currentState>
+          <nextState>8</nextState>
           <condition>
             <time>
               <period>monthly</period>

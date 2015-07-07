@@ -264,7 +264,7 @@ Warehouse divisions are used to mediate sales by the firm to sale-only consumer 
 	\item \textbf{PD\_record\_labour}
 \end{enumerate}
 
-\subsubsection{Marketing division decides labour employment}
+\subsubsection{Marketing division decides labour employment (TODO : add labour representation)}
 \begin{enumerate}
 	\item \textbf{PM\_state\_price} \\
 	$ PM \rightarrow market\_price \rightarrow SMD $
@@ -286,13 +286,12 @@ Warehouse divisions are used to mediate sales by the firm to sale-only consumer 
 \begin{enumerate}
 	\item \textbf{PD\_fixed\_capital\_depreciation}
 	\item \textbf{PD\_update\_labour}
-	\item \textbf{SMD\_update\_labour}
+	\item \textbf{SMD\_update\_labour} : TODO
 \end{enumerate}
 
 \subsubsection{Delivery cycle}
 \begin{enumerate}
 	\item \textbf{PD\_update\_deliveries}
-	\item \textbf{PD\_update\_fixed\_capital\_deliveries} - Must be \textbf{after} add\_fixed\_capital\_delivery
 	\item \textbf{SD\_update\_deliveries}
 	\item \textbf{WD\_update\_deliveries}
 \end{enumerate}

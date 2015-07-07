@@ -54,7 +54,7 @@ int PD_request_fixed_capital() {
     if (requirement > FIXED_CAPITAL) {
 
       // Calculate quantity to order
-      double to_order = requirement - FIXED_CAPITAL;
+      int to_order = ceil(requirement - FIXED_CAPITAL);
 
       // Send order
       add_market_order_message(FIXED_CAPITAL_MARKET_ID,
@@ -141,6 +141,85 @@ int PD_record_labour() {
 
 
   FINISH_MARKET_ORDER_CONFIRMATION_MESSAGE_LOOP
+
+  return 0;
+
+}
+
+int PD_update_fixed_capital() {
+
+  // Update deliveries
+  int r=0;
+  for (r=0; r<FIXED_CAPITAL_DELIVERIES.size; r++) {
+
+    // Reduce counter to arrival
+    FIXED_CAPITAL_DELIVERIES.array[r].time--;
+
+    // Delivery arrived
+    if (FIXED_CAPITAL_DELIVERIES.array[r].time <= 0) {
+
+      // Adjust fixed capital
+      FIXED_CAPITAL += FIXED_CAPITAL_DELIVERIES.array[r].quantity;
+
+      // Remove record of delivery
+      remove_single_type_record(&FIXED_CAPITAL_DELIVERIES, r);
+
+    } else {
+      r++;
+    }
+
+  }
+
+  // Depreciate
+  FIXED_CAPITAL *= (1 - FIXED_CAPITAL_DEPRECIATION_RATE);
+
+  return 0;
+
+}
+
+int PD_update_labour() {
+
+  // Update upcoming contracts
+  int r;
+
+  r=0;
+  while (r<UPCOMING_LABOUR_CONTRACTS.size) {
+
+    // Reduce counter to contract start
+    UPCOMING_LABOUR_CONTRACTS.array[r].time--;
+
+    // Contract starting
+    if (UPCOMING_LABOUR_CONTRACTS.array[r].time <= 0) {
+
+      // Update records
+      add_single_type_record(&EXISTING_LABOUR_CONTRACTS,
+        UPCOMING_LABOUR_CONTRACTS.array[r].quantity, 20);
+      remove_single_type_record(&UPCOMING_LABOUR_CONTRACTS, r);
+
+    } else {
+      r++;
+    }
+
+  }
+
+  // Update existing contracts
+  r=0;
+  while (r<EXISTING_LABOUR_CONTRACTS.size) {
+
+    // Reduce counter to contract end
+    EXISTING_LABOUR_CONTRACTS.array[r].time--;
+
+    // Contract ending
+    if (EXISTING_LABOUR_CONTRACTS.array[r].time <= 0) {
+
+      // Update records
+      remove_single_type_record(&EXISTING_LABOUR_CONTRACTS, r);
+
+    } else {
+      r++;
+    }
+
+  }
 
   return 0;
 
