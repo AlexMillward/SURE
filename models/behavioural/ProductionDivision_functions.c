@@ -1,3 +1,4 @@
+#include <math.h>
 #include "header.h"
 #include "ProductionDivision_agent_header.h"
 
@@ -44,9 +45,9 @@ int PD_request_fixed_capital() {
   // Check that a message from the fixed capital supply market was actually found
   if (price != -1) {
 
+    // Get the daily requirement
     double requirement;
-
-    requirement = ((double) OUTPUT_TARGET) * FIXED_CAPITAL_REQUIREMENT_PER_UNIT *
+    requirement = (((double) OUTPUT_TARGET) / 20) * FIXED_CAPITAL_REQUIREMENT_PER_UNIT *
       (1 + FIXED_CAPITAL_REQUIREMENT_SLACK);
 
     // Check additional fixed capital is actually required
@@ -76,7 +77,7 @@ int PD_add_fixed_capital_delivery() {
       market_order_confirmation_message->quantity;
 
     // Add the delivery
-    add_single_type_delivery(&FIXED_CAPITAL_DELIVERIES,
+    add_single_type_record(&FIXED_CAPITAL_DELIVERIES,
       market_order_confirmation_message->quantity,
       FIXED_CAPITAL_INSTALLATION_TIME);
 
@@ -85,8 +86,6 @@ int PD_add_fixed_capital_delivery() {
   return 0;
 
 }
-
-/*
 
 int PD_request_labour() {
 
@@ -100,7 +99,26 @@ int PD_request_labour() {
 
   if (price != -1) {
 
-    double requirement;
+    int d;
+
+    // Find the eventual quantity of fixed capital
+    double eventual_fixed_capital = FIXED_CAPITAL;
+    for (d=0; d<FIXED_CAPITAL_DELIVERIES.size; d++) {
+      eventual_fixed_capital += FIXED_CAPITAL_DELIVERIES.array[d].quantity;
+    }
+
+    // Find the potential labour that could be used given current capital
+    int fixed_capital_potential = floor(LABOUR_PER_UNIT_FIXED_CAPITAL * eventual_fixed_capital);
+
+    // Find desirable based on output target (TODO : confirm equation)
+    int desirable = ceil(((double) OUTPUT_TARGET / 20) * FIXED_CAPITAL_REQUIREMENT_PER_UNIT *
+      LABOUR_PER_UNIT_FIXED_CAPITAL * (1 + LABOUR_REQUIREMENT_SLACK));
+
+    // Decide on the quantity to employ
+    int employment_quantity = (desirable < fixed_capital_potential ? desirable : fixed_capital_potential);
+
+    // Add the order
+    add_market_order_message(LABOUR_MARKET_ID, FIRM_ID, DIVISION_ID, employment_quantity);
 
   }
 
@@ -108,4 +126,22 @@ int PD_request_labour() {
 
 }
 
-*/
+int PD_record_labour() {
+
+  START_MARKET_ORDER_CONFIRMATION_MESSAGE_LOOP
+
+    // Adjust available funds
+    FUNDS -= market_order_confirmation_message->price *
+      market_order_confirmation_message->quantity;
+
+    // Record the labour addition
+    add_single_type_record(&UPCOMING_LABOUR_CONTRACTS,
+      market_order_confirmation_message->quantity,
+      LABOUR_EMPLOYMENT_PHASE);
+
+
+  FINISH_MARKET_ORDER_CONFIRMATION_MESSAGE_LOOP
+
+  return 0;
+
+}
