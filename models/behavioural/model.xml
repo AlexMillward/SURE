@@ -144,6 +144,7 @@
         <variable><type>double</type><name>production_funding_buffer</name></variable>
       </memory>
       <functions>
+
         <function>
           <name>MD_administrate</name>
           <description></description>
@@ -182,6 +183,24 @@
             </output>
           </outputs>
         </function>
+
+        <function>
+          <name>MD_process_sale</name>
+          <description></description>
+          <currentState>1</currentState>
+          <nextState>2</nextState>
+          <inputs>
+            <input>
+              <messageName>market_sale_confirmation</messageName>
+              <filter>
+                <lhs><value>a.firm_id</value></lhs>
+                <op>EQ</op>
+                <rhs><value>m.firm_id</value></rhs>
+              </filter>
+            </input>
+          </inputs>
+        </function>
+
       </functions>
     </xagent>
 
@@ -1051,7 +1070,6 @@
         <variable><type>int</type><name>market_id</name></variable>
         <variable><type>int</type><name>firm_id</name></variable>
         <variable><type>int</type><name>quantity</name></variable>
-        <variable><type>double</type><name>price</name></variable>
       </variables>
     </message>
 
@@ -1061,7 +1079,8 @@
       <variables>
         <variable><type>int</type><name>market_id</name></variable>
         <variable><type>int</type><name>firm_id</name></variable>
-        <variable><type>int</type><name>quantity</name></variable>
+        <variable><type>int</type><name>provided</name></variable>
+        <variable><type>int</type><name>deficit</name></variable>
         <variable><type>double</type><name>price</name></variable>
       </variables>
     </message>

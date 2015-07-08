@@ -91,3 +91,22 @@ int MD_administrate() {
   return 0;
 
 }
+
+int MD_process_sale() {
+
+  double earnings;
+
+  START_MARKET_SALE_CONFIRMATION_MESSAGE_LOOP
+
+    // Calculate earnings
+    earnings = market_sale_confirmation_message->provided *
+      market_sale_confirmation_message->price;
+
+    // Update relevant figures and tracking
+    FUNDS += earnings;
+
+  FINISH_MARKET_SALE_CONFIRMATION_MESSAGE_LOOP
+
+  return 0;
+
+}

@@ -67,6 +67,27 @@ int SM_require() {
 
 int SM_confirm_sale() {
 
+  int p;
+
+  START_MARKET_PROVISION_MESSAGE_LOOP
+
+    // Find relevant participant details
+    for (p=0; p<PARTICIPANTS.size; p++) {
+      if (PARTICIPANTS.array[p].firm_id == market_provision_message->firm_id) {
+
+        // Confirm sale, stating deficit of quantity provided, quantity provided and price
+        add_market_sale_confirmation_message(MARKET_ID,
+          market_provision_message->firm_id,
+          market_provision_message->quantity,
+          PARTICIPANTS.array[p].quantity_demanded,
+          PARTICIPANTS.array[p].price);
+
+        break;
+      }
+    }
+
+  FINISH_MARKET_PROVISION_MESSAGE_LOOP
+
   return 0;
 
 }

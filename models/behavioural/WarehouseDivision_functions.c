@@ -77,11 +77,29 @@ int WD_add_delivery() {
 
 int WD_provide() {
 
+  // Decide on the amount that can be provided
+  int amount;
+  int iteration_inventory = CURRENT_INVENTORY;
+  START_MARKET_REQUIREMENT_MESSAGE_LOOP
+    amount = iteration_inventory < market_requirement_message->quantity ?
+      iteration_inventory : market_requirement_message->quantity;
+    iteration_inventory -= amount;
+    add_market_provision_message(market_requirement_message->market_id, FIRM_ID, amount);
+  FINISH_MARKET_REQUIREMENT_MESSAGE_LOOP
+
   return 0;
 
 }
 
 int WD_process_sale() {
+
+  START_MARKET_SALE_CONFIRMATION_MESSAGE_LOOP
+
+    // Update tracking of provided goods and deficit of provided goods
+    CUMULATIVE_DISPATCHED += market_sale_confirmation_message->provided;
+    CUMULATIVE_DEFICIT += market_sale_confirmation_message->deficit;
+
+  FINISH_MARKET_SALE_CONFIRMATION_MESSAGE_LOOP
 
   return 0;
 
