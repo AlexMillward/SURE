@@ -564,6 +564,18 @@
           </inputs>
         </function>
 
+        <function>
+          <name>SMD_apply_factors</name>
+          <description></description>
+          <currentState>3</currentState>
+          <nextState>4</nextState>
+          <outputs>
+            <output>
+              <messageName>marketing_factors</messageName>
+            </output>
+          </outputs>
+        </function>
+
       </functions>
     </xagent>
 
@@ -841,6 +853,7 @@
         <variable><type>int</type><name>overall_demand</name></variable>
         <variable><type>double</type><name>preference_total</name></variable>
         <variable><type>double</type><name>marketing_factor_weights[2]</name></variable>
+        <variable><type>double</type><name>factor_depreciation[2]</name></variable>
       </memory>
       <functions>
 
@@ -883,6 +896,25 @@
               <messageName>market_sale_confirmation</messageName>
             </output>
           </outputs>
+        </function>
+
+        <function>
+          <name>SM_update_factors</name>
+          <description></description>
+          <currentState>3</currentState>
+          <nextState>4</nextState>
+        </function>
+
+        <function>
+          <name>SM_process_factors</name>
+          <description></description>
+          <currentState>4</currentState>
+          <nextState>5</nextState>
+          <inputs>
+            <input>
+              <messageName>marketing_factors</messageName>
+            </input>
+          </inputs>
         </function>
 
       </functions>
@@ -1082,6 +1114,15 @@
         <variable><type>int</type><name>provided</name></variable>
         <variable><type>int</type><name>deficit</name></variable>
         <variable><type>double</type><name>price</name></variable>
+      </variables>
+    </message>
+
+    <message>
+      <name>marketing_factors</name>
+      <description></description>
+      <variables>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>double</type><name>factors[2]</name></variable>
       </variables>
     </message>
 

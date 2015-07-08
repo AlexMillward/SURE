@@ -96,3 +96,17 @@ int SMD_strategise() {
   return 0;
 
 }
+
+int SMD_apply_factors() {
+
+  // Send description of marketing activites to the market
+  double daily_factors[MARKETING_FACTOR_COUNT];
+  for (int m=0; m<MARKETING_FACTOR_COUNT; m++) {
+    daily_factors[m] = FACTORS[m].available / 20;
+  }
+
+  add_marketing_factors_message(FIRM_ID, daily_factors);
+
+  return 0;
+
+}

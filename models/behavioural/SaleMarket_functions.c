@@ -10,7 +10,7 @@ int SM_update_demand() {
   // Determine pre-marketing preference
   for (p=0; p<PARTICIPANTS.size; p++) {
     PARTICIPANTS.array[p].market_preference =
-      (1 / PARTICIPANTS.array[p].price) * PARTICIPANTS.array[p].quality;
+      log( 1 + ( (1 / PARTICIPANTS.array[p].price) * PARTICIPANTS.array[p].quality ) );
   }
 
   // Find totals of each marketing factor
@@ -26,8 +26,8 @@ int SM_update_demand() {
   // Update preferences
   for (p=0; p<PARTICIPANTS.size; p++) {
     for (m=0; m<MARKETING_FACTOR_COUNT; m++) {
-      PARTICIPANTS.array[p].market_preference *= (MARKETING_FACTOR_WEIGHTS[m] *
-        (PARTICIPANTS.array[p].marketing_factors[m] / MARKETING_FACTOR_TOTALS[m]));
+      PARTICIPANTS.array[p].market_preference += ( MARKETING_FACTOR_WEIGHTS[m] *
+        log1p( 1 + (PARTICIPANTS.array[p].marketing_factors[m] / MARKETING_FACTOR_TOTALS[m]) ) );
     }
   }
 
@@ -38,7 +38,7 @@ int SM_update_demand() {
   }
 
   // Calculate change in overall demand and update the preference total
-  OVERALL_DEMAND = floor(OVERALL_DEMAND * ((new_preference_total - PREFERENCE_TOTAL) / PREFERENCE_TOTAL));
+  OVERALL_DEMAND = floor( OVERALL_DEMAND * ((new_preference_total - PREFERENCE_TOTAL) / PREFERENCE_TOTAL) );
   PREFERENCE_TOTAL = new_preference_total;
 
   // Calculate market share and quantity demanded for each participant
@@ -87,6 +87,53 @@ int SM_confirm_sale() {
     }
 
   FINISH_MARKET_PROVISION_MESSAGE_LOOP
+
+  return 0;
+
+}
+
+int SM_update_factors() {
+
+  // Depreciate
+  int m, p;
+  double total;
+  for (m=0; m<MARKETING_FACTOR_COUNT; m++) {
+
+    // Calculate total
+    total = 0;
+    for (p=0; p<PARTICIPANTS.size; p++) {
+      total += PARTICIPANTS.array[p].marketing_factors[m];
+    }
+
+    // Apply depreciation
+    for (p=0; p<PARTICIPANTS.size; p++) {
+      PARTICIPANTS.array[p].marketing_factors[m] *=
+        (1 - ( FACTOR_DEPRECIATION[m] *
+          (PARTICIPANTS.array[p].marketing_factors[m] / total)
+        ));
+    }
+
+  }
+
+  return 0;
+
+}
+
+int SM_process_factors() {
+
+  // Update factors based on statements by marketing divisions
+  int p, m;
+  START_MARKETING_FACTORS_MESSAGE_LOOP
+    for (p=0; PARTICIPANTS.size; p++) {
+      if (PARTICIPANTS.array[p].firm_id == marketing_factors_message->firm_id) {
+        for (m=0; m<MARKETING_FACTOR_COUNT; m++) {
+          PARTICIPANTS.array[p].marketing_factors[m] +=
+            marketing_factors_message->factors[m];
+        }
+        break;
+      }
+    }
+  FINISH_MARKETING_FACTORS_MESSAGE_LOOP
 
   return 0;
 
