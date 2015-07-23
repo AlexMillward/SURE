@@ -150,12 +150,6 @@
           <description></description>
           <currentState>0</currentState>
           <nextState>1</nextState>
-          <condition>
-            <time>
-              <period>monthly</period>
-              <phase>1</phase>
-            </time>
-          </condition>
           <inputs>
             <input>
               <messageName>division_administration_report</messageName>
@@ -175,6 +169,9 @@
             </input>
           </inputs>
           <outputs>
+            <output>
+              <messageName>firm_price</messageName>
+            </output>
             <output>
               <messageName>division_production_instruction</messageName>
             </output>
@@ -244,12 +241,6 @@
           <description></description>
           <currentState>0</currentState>
           <nextState>1</nextState>
-          <condition>
-            <time>
-              <period>monthly</period>
-              <phase>1</phase>
-            </time>
-          </condition>
           <outputs>
             <output>
               <messageName>division_administration_report</messageName>
@@ -262,12 +253,6 @@
           <description></description>
           <currentState>1</currentState>
           <nextState>2</nextState>
-          <condition>
-            <time>
-              <period>monthly</period>
-              <phase>1</phase>
-            </time>
-          </condition>
           <inputs>
             <input>
               <messageName>division_production_instruction</messageName>
@@ -307,12 +292,6 @@
           <description></description>
           <currentState>4</currentState>
           <nextState>5</nextState>
-          <condition>
-            <time>
-              <period>monthly</period>
-              <phase>1</phase>
-            </time>
-          </condition>
           <inputs>
             <input>
               <messageName>market_price</messageName>
@@ -335,12 +314,6 @@
           <description></description>
           <currentState>5</currentState>
           <nextState>6</nextState>
-          <condition>
-            <time>
-              <period>monthly</period>
-              <phase>1</phase>
-            </time>
-          </condition>
           <inputs>
             <input>
               <messageName>market_price</messageName>
@@ -363,12 +336,6 @@
           <description></description>
           <currentState>6</currentState>
           <nextState>7</nextState>
-          <condition>
-            <time>
-              <period>monthly</period>
-              <phase>1</phase>
-            </time>
-          </condition>
           <inputs>
             <input>
               <messageName>market_order_confirmation</messageName>
@@ -402,12 +369,6 @@
           <description></description>
           <currentState>7</currentState>
           <nextState>8</nextState>
-          <condition>
-            <time>
-              <period>monthly</period>
-              <phase>1</phase>
-            </time>
-          </condition>
           <inputs>
             <input>
               <messageName>market_order_confirmation</messageName>
@@ -449,7 +410,9 @@
           <currentState>9</currentState>
           <nextState>10</nextState>
           <outputs>
-            <messageName>division_delivery_notification</messageName>
+            <output>
+              <messageName>division_delivery_notification</messageName>
+            </output>
           </outputs>
         </function>
 
@@ -505,12 +468,6 @@
           <description></description>
           <currentState>0</currentState>
           <nextState>1</nextState>
-          <condition>
-            <time>
-              <period>monthly</period>
-              <phase>1</phase>
-            </time>
-          </condition>
           <outputs>
             <output>
               <messageName>division_administration_report</messageName>
@@ -523,12 +480,6 @@
           <description></description>
           <currentState>1</currentState>
           <nextState>2</nextState>
-          <condition>
-            <time>
-              <period>monthly</period>
-              <phase>1</phase>
-            </time>
-          </condition>
           <inputs>
             <input>
               <messageName>division_marketing_instruction</messageName>
@@ -546,12 +497,6 @@
           <description></description>
           <currentState>2</currentState>
           <nextState>3</nextState>
-          <condition>
-            <time>
-              <period>monthly</period>
-              <phase>1</phase>
-            </time>
-          </condition>
           <inputs>
             <input>
               <messageName>division_marketing_inventory_report</messageName>
@@ -604,12 +549,6 @@
           <description></description>
           <currentState>0</currentState>
           <nextState>1</nextState>
-          <condition>
-            <time>
-              <period>monthly</period>
-              <phase>1</phase>
-            </time>
-          </condition>
           <outputs>
             <output>
               <messageName>division_administration_report</messageName>
@@ -622,12 +561,6 @@
           <description></description>
           <currentState>1</currentState>
           <nextState>2</nextState>
-          <condition>
-            <time>
-              <period>monthly</period>
-              <phase>1</phase>
-            </time>
-          </condition>
           <inputs>
             <input>
               <messageName>division_production_instruction</messageName>
@@ -731,40 +664,28 @@
       <functions>
 
         <function>
-          <name>WD_report</name>
+          <name>WD_marketing_report</name>
           <description></description>
           <currentState>0</currentState>
           <nextState>1</nextState>
-          <condition>
-            <time>
-              <period>monthly</period>
-              <phase>1</phase>
-            </time>
-          </condition>
+          <outputs>
+            <output>
+              <messageName>division_marketing_inventory_report</messageName>
+            </output>
+          </outputs>
+        </function>
+
+        <function>
+          <name>WD_report</name>
+          <description></description>
+          <currentState>1</currentState>
+          <nextState>2</nextState>
           <outputs>
             <output>
               <messageName>division_administration_report</messageName>
             </output>
             <output>
               <messageName>division_inventory_report</messageName>
-            </output>
-          </outputs>
-        </function>
-
-        <function>
-          <name>WD_marketing_report</name>
-          <description></description>
-          <currentState>1</currentState>
-          <nextState>2</nextState>
-          <condition>
-            <time>
-              <period>monthly</period>
-              <phase>1</phase>
-            </time>
-          </condition>
-          <outputs>
-            <output>
-              <messageName>division_marketing_inventory_report</messageName>
             </output>
           </outputs>
         </function>
@@ -862,6 +783,11 @@
           <description></description>
           <currentState>0</currentState>
           <nextState>1</nextState>
+          <inputs>
+            <input>
+              <messageName>firm_price</messageName>
+            </input>
+          </inputs>
         </function>
 
         <function>
@@ -938,12 +864,6 @@
           <description>Monthly action to limit volatility</description>
           <currentState>0</currentState>
           <nextState>1</nextState>
-          <condition>
-            <time>
-              <period>monthly</period>
-              <phase>1</phase>
-            </time>
-          </condition>
         </function>
 
         <function>
@@ -1028,7 +948,7 @@
       <description></description>
       <variables>
         <variable><type>int</type><name>firm_id</name></variable>
-        <variable><type>int</type><name>funding</name></variable>
+        <variable><type>double</type><name>funding</name></variable>
       </variables>
     </message>
 
@@ -1037,7 +957,7 @@
       <description></description>
       <variables>
         <variable><type>int</type><name>firm_id</name></variable>
-        <variable><type>double</type><name>dispatched</name></variable>
+        <variable><type>int</type><name>dispatched</name></variable>
       </variables>
     </message>
 
@@ -1123,6 +1043,15 @@
       <variables>
         <variable><type>int</type><name>firm_id</name></variable>
         <variable><type>double</type><name>factors[2]</name></variable>
+      </variables>
+    </message>
+
+    <message>
+      <name>firm_price</name>
+      <description></description>
+      <variables>
+        <variable><type>int</type><name>firm_id</name></variable>
+        <variable><type>double</type><name>price</name></variable>
       </variables>
     </message>
 

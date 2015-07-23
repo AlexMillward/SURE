@@ -3,13 +3,14 @@
 
 int PM_update_price() {
 
-  // Calculate the change in sales
-  int sales_change = LAST_SALES - CUMULATIVE_SALES;
-  PRICE += ( ((double) sales_change) / ((double) PRICE_ELASTICITY) );
-
-  // Update sales counters
-  LAST_SALES = CUMULATIVE_SALES;
-  CUMULATIVE_SALES = 0;
+  if (iteration_loop % 20 == 1) {
+    // Calculate the change in sales
+    int sales_change = LAST_SALES - CUMULATIVE_SALES;
+    PRICE += ( ((double) sales_change) / ((double) PRICE_ELASTICITY) );
+    // Update sales counters
+    LAST_SALES = CUMULATIVE_SALES;
+    CUMULATIVE_SALES = 0;
+  }
 
   return 0;
 

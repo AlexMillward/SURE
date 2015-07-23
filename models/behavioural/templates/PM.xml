@@ -1,0 +1,9 @@
+<xagent>
+  <name>PurchaseMarket</name>
+  <market_id>0</market_id><!-- int (unique in global id scope), 0 <= x -->
+  <last_sales>0</last_sales><!-- int, 0 <= x -->
+  <price>0</price><!-- double, 0 <= x -->
+  <price_elasticity>0</price_elasticity><!-- double -->
+  <!-- == == calculated during iteration == == -->
+  <cumulative_sales>0</cumulative_sales><!-- int, 0 <= x -->
+</xagent>

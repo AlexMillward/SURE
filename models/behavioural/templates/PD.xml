@@ -1,0 +1,27 @@
+<xagent>
+  <name>ProductionDivision</name>
+  <firm_id>0</firm_id><!-- int (unique in global id scope), 0 <= x -->
+  <division_id>0</division_id><!-- int (unique in internal id scope), 0 <= x -->
+  <fixed_capital_market_id>0</fixed_capital_market_id><!-- int (reference global id scope), 0 <= x  -->
+  <fixed_capital>0</fixed_capital><!-- double, 0 <= x -->
+  <daily_unit_fixed_capital_output>0</daily_unit_fixed_capital_output><!-- double, 0 <= x -->
+  <fixed_capital_requirement_slack>0</fixed_capital_requirement_slack><!-- double, 0 <= x -->
+  <fixed_capital_installation_time>0</fixed_capital_installation_time><!-- int, 0 <= x -->
+  <fixed_capital_deliveries>{}</fixed_capital_deliveries><!-- { quantity (int, 0 <= x), time (int, 0 <= x) } -->
+  <fixed_capital_depreciation_rate>0</fixed_capital_depreciation_rate><!-- double, 0 <= x -->
+  <labour_market_id>0</labour_market_id><!-- int (unique in global id scope), 0 <= x -->
+  <labour_per_unit_fixed_capital>0</labour_per_unit_fixed_capital><!-- double, 0 <= x -->
+  <labour_requirement_slack>0</labour_requirement_slack><!-- double, 0 <= x -->
+  <labour_employment_phase>0</labour_employment_phase><!-- int, 0 <= x -->
+  <upcoming_labour_contracts>{}</upcoming_labour_contracts><!-- { quantity (int, 0 <= x), time (int, 0 <= x) } -->
+  <existing_labour_contracts>{}</existing_labour_contracts><!-- { quantity (int, 0 <= x), time (int, 0 <= x) } -->
+  <division_deliveries>{}</division_deliveries><!-- { quantity (int, 0 <= x), delivery_time (int, 0 <= x), source_id (int, 0 <= x) } -->
+  <working_capital_inventory>{}</working_capital_inventory><!-- { source_id (int, 0 <= x), quantity (int, 0 <= x) } -->
+  <delivers_to_id>0</delivers_to_id><!-- int (references internal id scope), 0 <= x -->
+  <time_to_deliver>0</time_to_deliver><!-- int, 0 <= x -->
+  <!-- == == calculated during iteration == == -->
+  <output_target>0</output_target><!-- int, 0 <= x -->
+  <funds>0</funds><!-- double -->
+  <cumulative_output>0</cumulative_output><!-- int, 0 <= x -->
+  <cumulative_costs>0</cumulative_costs><!-- double, 0 <= x -->
+</xagent>

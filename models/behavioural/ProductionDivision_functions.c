@@ -1,17 +1,20 @@
 #include <math.h>
+#include <stdio.h>
 #include "header.h"
 #include "ProductionDivision_agent_header.h"
 
 int PD_report() {
 
-  // Report output and cost statistics
-  add_division_administration_report_message(FIRM_ID, DIVISION_ID,
-    ((double) CUMULATIVE_OUTPUT) / ((double) OUTPUT_TARGET), CUMULATIVE_COSTS, FUNDS);
+  if (iteration_loop % 20 == 1) {
+    // Report output and cost statistics
+    add_division_administration_report_message(FIRM_ID, DIVISION_ID,
+      ((double) CUMULATIVE_OUTPUT) / ((double) OUTPUT_TARGET), CUMULATIVE_COSTS, FUNDS);
 
-  // Reset output and cost statistics
-  FUNDS = 0;
-  CUMULATIVE_OUTPUT = 0;
-  CUMULATIVE_COSTS = 0;
+    // Reset output and cost statistics
+    FUNDS = 0;
+    CUMULATIVE_OUTPUT = 0;
+    CUMULATIVE_COSTS = 0;
+  }
 
   return 0;
 
@@ -19,13 +22,13 @@ int PD_report() {
 
 int PD_process_instruction() {
 
-  START_DIVISION_PRODUCTION_INSTRUCTION_MESSAGE_LOOP
-
-    // Set output target and funds from instruction
-    OUTPUT_TARGET = division_production_instruction_message->production_target;
-    FUNDS = division_production_instruction_message->funding;
-
-  FINISH_DIVISION_PRODUCTION_INSTRUCTION_MESSAGE_LOOP
+  if (iteration_loop % 20 == 1) {
+    START_DIVISION_PRODUCTION_INSTRUCTION_MESSAGE_LOOP
+      // Set output target and funds from instruction
+      OUTPUT_TARGET = division_production_instruction_message->production_target;
+      FUNDS = division_production_instruction_message->funding;
+    FINISH_DIVISION_PRODUCTION_INSTRUCTION_MESSAGE_LOOP
+  }
 
   return 0;
 
@@ -34,34 +37,60 @@ int PD_process_instruction() {
 // TODO : expenditure safety checks and ? output adjustment (required?)
 int PD_request_fixed_capital() {
 
-  // Initialise
-  double price = -1;
-
-  // Get the market price
-  START_MARKET_PRICE_MESSAGE_LOOP
-    price = market_price_message->price;
-  FINISH_MARKET_PRICE_MESSAGE_LOOP
-
-  // Check that a message from the fixed capital supply market was actually found
-  if (price != -1) {
-
-    // Get the daily requirement
-    double requirement;
-    requirement = ((((double) OUTPUT_TARGET) / 20) / DAILY_UNIT_FIXED_CAPITAL_OUTPUT) *
-      (1 + FIXED_CAPITAL_REQUIREMENT_SLACK);
-
-    // Check additional fixed capital is actually required
-    if (requirement > FIXED_CAPITAL) {
-
-      // Calculate quantity to order
-      int to_order = ceil(requirement - FIXED_CAPITAL);
-
-      // Send order
-      add_market_order_message(FIXED_CAPITAL_MARKET_ID,
-        FIRM_ID, DIVISION_ID, to_order);
-
+  if (iteration_loop % 20 == 1) {
+    // Initialise
+    double price = -1;
+    // Get the market price
+    START_MARKET_PRICE_MESSAGE_LOOP
+      price = market_price_message->price;
+    FINISH_MARKET_PRICE_MESSAGE_LOOP
+    // Check that a message from the fixed capital supply market was actually found
+    if (price != -1) {
+      // Get the daily requirement
+      double requirement;
+      requirement = ((((double) OUTPUT_TARGET) / 20) / DAILY_UNIT_FIXED_CAPITAL_OUTPUT) *
+        (1 + FIXED_CAPITAL_REQUIREMENT_SLACK);
+      // Check additional fixed capital is actually required
+      if (requirement > FIXED_CAPITAL) {
+        // Calculate quantity to order
+        int to_order = ceil(requirement - FIXED_CAPITAL);
+        // Send order
+        add_market_order_message(FIXED_CAPITAL_MARKET_ID,
+          FIRM_ID, DIVISION_ID, to_order);
+      }
     }
+  }
 
+  return 0;
+
+}
+
+int PD_request_labour() {
+
+  if (iteration_loop % 20 == 1) {
+    // Initialise
+    double price = -1;
+    // Get the market price
+    START_MARKET_PRICE_MESSAGE_LOOP
+      price = market_price_message->price;
+    FINISH_MARKET_PRICE_MESSAGE_LOOP
+    if (price != -1) {
+      int d;
+      // Find the eventual quantity of fixed capital
+      double eventual_fixed_capital = FIXED_CAPITAL;
+      for (d=0; d<FIXED_CAPITAL_DELIVERIES.size; d++) {
+        eventual_fixed_capital += FIXED_CAPITAL_DELIVERIES.array[d].quantity;
+      }
+      // Find the potential labour that could be used given current capital
+      int fixed_capital_potential = floor(LABOUR_PER_UNIT_FIXED_CAPITAL * eventual_fixed_capital);
+      // Find desirable based on output target (TODO : confirm equation)
+      int desirable = ceil((((double) OUTPUT_TARGET / 20) / DAILY_UNIT_FIXED_CAPITAL_OUTPUT) *
+        LABOUR_PER_UNIT_FIXED_CAPITAL * (1 + LABOUR_REQUIREMENT_SLACK));
+      // Decide on the quantity to employ
+      int employment_quantity = (desirable < fixed_capital_potential ? desirable : fixed_capital_potential);
+      // Add the order
+      add_market_order_message(LABOUR_MARKET_ID, FIRM_ID, DIVISION_ID, employment_quantity);
+    }
   }
 
   return 0;
@@ -70,58 +99,18 @@ int PD_request_fixed_capital() {
 
 int PD_add_fixed_capital_delivery() {
 
-  START_MARKET_ORDER_CONFIRMATION_MESSAGE_LOOP
-
-    // Adjust available funds
-    double expenditure = market_order_confirmation_message->price *
-      market_order_confirmation_message->quantity;
-    FUNDS -= expenditure;
-    CUMULATIVE_COSTS += expenditure;
-
-    // Add the delivery
-    add_single_type_record(&FIXED_CAPITAL_DELIVERIES,
-      market_order_confirmation_message->quantity,
-      FIXED_CAPITAL_INSTALLATION_TIME);
-
-  FINISH_MARKET_ORDER_CONFIRMATION_MESSAGE_LOOP
-
-  return 0;
-
-}
-
-int PD_request_labour() {
-
-  // Initialise
-  double price = -1;
-
-  // Get the market price
-  START_MARKET_PRICE_MESSAGE_LOOP
-    price = market_price_message->price;
-  FINISH_MARKET_PRICE_MESSAGE_LOOP
-
-  if (price != -1) {
-
-    int d;
-
-    // Find the eventual quantity of fixed capital
-    double eventual_fixed_capital = FIXED_CAPITAL;
-    for (d=0; d<FIXED_CAPITAL_DELIVERIES.size; d++) {
-      eventual_fixed_capital += FIXED_CAPITAL_DELIVERIES.array[d].quantity;
-    }
-
-    // Find the potential labour that could be used given current capital
-    int fixed_capital_potential = floor(LABOUR_PER_UNIT_FIXED_CAPITAL * eventual_fixed_capital);
-
-    // Find desirable based on output target (TODO : confirm equation)
-    int desirable = ceil((((double) OUTPUT_TARGET / 20) / DAILY_UNIT_FIXED_CAPITAL_OUTPUT) *
-      LABOUR_PER_UNIT_FIXED_CAPITAL * (1 + LABOUR_REQUIREMENT_SLACK));
-
-    // Decide on the quantity to employ
-    int employment_quantity = (desirable < fixed_capital_potential ? desirable : fixed_capital_potential);
-
-    // Add the order
-    add_market_order_message(LABOUR_MARKET_ID, FIRM_ID, DIVISION_ID, employment_quantity);
-
+  if (iteration_loop % 20 == 1) {
+    START_MARKET_ORDER_CONFIRMATION_MESSAGE_LOOP
+      // Adjust available funds
+      double expenditure = market_order_confirmation_message->price *
+        market_order_confirmation_message->quantity;
+      FUNDS -= expenditure;
+      CUMULATIVE_COSTS += expenditure;
+      // Add the delivery
+      add_single_type_record(&FIXED_CAPITAL_DELIVERIES,
+        market_order_confirmation_message->quantity,
+        FIXED_CAPITAL_INSTALLATION_TIME);
+    FINISH_MARKET_ORDER_CONFIRMATION_MESSAGE_LOOP
   }
 
   return 0;
@@ -130,21 +119,19 @@ int PD_request_labour() {
 
 int PD_record_labour() {
 
-  START_MARKET_ORDER_CONFIRMATION_MESSAGE_LOOP
-
-    // Adjust available funds
-    double expenditure = market_order_confirmation_message->price *
-      market_order_confirmation_message->quantity;
-    FUNDS -= expenditure;
-    CUMULATIVE_COSTS += expenditure;
-
-    // Record the labour addition
-    add_single_type_record(&UPCOMING_LABOUR_CONTRACTS,
-      market_order_confirmation_message->quantity,
-      LABOUR_EMPLOYMENT_PHASE);
-
-
-  FINISH_MARKET_ORDER_CONFIRMATION_MESSAGE_LOOP
+  if (iteration_loop % 20 == 1) {
+    START_MARKET_ORDER_CONFIRMATION_MESSAGE_LOOP
+      // Adjust available funds
+      double expenditure = market_order_confirmation_message->price *
+        market_order_confirmation_message->quantity;
+      FUNDS -= expenditure;
+      CUMULATIVE_COSTS += expenditure;
+      // Record the labour addition
+      add_single_type_record(&UPCOMING_LABOUR_CONTRACTS,
+        market_order_confirmation_message->quantity,
+        LABOUR_EMPLOYMENT_PHASE);
+    FINISH_MARKET_ORDER_CONFIRMATION_MESSAGE_LOOP
+  }
 
   return 0;
 
@@ -232,6 +219,7 @@ int PD_update_labour() {
 int PD_update_deliveries() {
 
   int d=0;
+
   while (d<DIVISION_DELIVERIES.size) {
 
     // Reduce counter to arrival

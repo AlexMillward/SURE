@@ -7,10 +7,19 @@ int SM_update_demand() {
   // Initialisation
   int p, m;
 
+  // Price update
+  START_FIRM_PRICE_MESSAGE_LOOP
+    for (p=0; p<PARTICIPANTS.size; p++) {
+      if (PARTICIPANTS.array[p].firm_id == firm_price_message->firm_id) {
+        PARTICIPANTS.array[p].price = firm_price_message->price;
+      }
+    }
+  FINISH_FIRM_PRICE_MESSAGE_LOOP
+
   // Determine pre-marketing preference
   for (p=0; p<PARTICIPANTS.size; p++) {
     PARTICIPANTS.array[p].market_preference =
-      log( 1 + ( (1 / PARTICIPANTS.array[p].price) * PARTICIPANTS.array[p].quality ) );
+      log( 1 + ( (1 / (1 + PARTICIPANTS.array[p].price) ) * PARTICIPANTS.array[p].quality ) );
   }
 
   // Find totals of each marketing factor
@@ -32,13 +41,13 @@ int SM_update_demand() {
   }
 
   // Calculate the preference total
-  int new_preference_total = 0;
+  double new_preference_total = 0;
   for (p=0; p<PARTICIPANTS.size; p++) {
     new_preference_total += PARTICIPANTS.array[p].market_preference;
   }
 
   // Calculate change in overall demand and update the preference total
-  OVERALL_DEMAND = floor( OVERALL_DEMAND * ((new_preference_total - PREFERENCE_TOTAL) / PREFERENCE_TOTAL) );
+  OVERALL_DEMAND += floor( ((double) OVERALL_DEMAND) * ((new_preference_total - PREFERENCE_TOTAL) / PREFERENCE_TOTAL) );
   PREFERENCE_TOTAL = new_preference_total;
 
   // Calculate market share and quantity demanded for each participant

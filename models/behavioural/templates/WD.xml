@@ -1,0 +1,13 @@
+<xagent>
+  <name>WarehouseDivision</name>
+  <firm_id>0</firm_id><!-- int (unique in global id scope), 0 <= x -->
+  <division_id>0</division_id><!-- int (unique in internal id scope), 0 <= x -->
+  <deliveries>{}</deliveries><!-- { quantity (int), time (int) }-->
+  <!-- == == calculated during iteration == == -->
+  <funds>0</funds><!-- double -->
+  <cumulative_costs>0</cumulative_costs><!-- double, 0 <= x -->
+  <current_inventory>0</current_inventory><!-- int, 0 <= x -->
+  <cumulative_recieved>0</cumulative_recieved><!-- int, 0 <= x -->
+  <cumulative_dispatched>0</cumulative_dispatched><!-- int, 0 <= x -->
+  <cumulative_deficit>0</cumulative_deficit><!-- int, 0 <= x -->
+</xagent>

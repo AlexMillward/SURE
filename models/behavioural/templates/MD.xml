@@ -1,0 +1,18 @@
+<xagent>
+  <name>ManagementDivision</name>
+  <firm_id>0</firm_id><!-- int (unique in global id scope), 0 <= x -->
+  <funds>0</funds><!-- double -->
+  <funding_slack>0</funding_slack><!-- double, 0 <= x -->
+  <markup>0</markup><!-- double, 0 <= x -->
+  <production_funding_buffer>0</production_funding_buffer><!-- double, 0 <= x -->
+  <!-- == == calculated during iteration == == -->
+  <production_reports>{}</production_reports><!-- ! leave empty -->
+  <cumulative_costs>0</cumulative_costs><!-- ! leave at 0 -->
+  <cumulative_produced>0</cumulative_produced><!-- ! leave at 0 -->
+  <cumulative_sold>0</cumulative_sold><!-- ! leave at 0 -->
+  <cumulative_deficit>0</cumulative_deficit><!-- ! leave at 0 -->
+  <current_stock>0</current_stock><!-- ! leave at 0 -->
+  <price>0</price><!-- ! leave at 0 -->
+  <production_target>0</production_target><!-- ! leave at 0 -->
+  <production_expenditure>0</production_expenditure><!-- ! leave at 0 -->
+</xagent>

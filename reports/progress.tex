@@ -1,0 +1,29 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.4in]{geometry}
+
+\begin{document}
+
+\section{What I've done}
+\begin{enumerate}
+	\item Built a model based on the behavioural theory of the firm.
+	\item Implemented representation of demand generation (through a Marketing Division) and output generation to try and meet demand (through a hierarchy of Production Divisions).
+	\item Implemented a decision making agent in the form of the Management Division.
+	\item Implemented agents to fill out the rest of the behavioural model and facilitate intuitive operation (Warehouse Agent and Supply Agent).
+	\item Implemented basic market representation (a "sale market" for heterogeneous goods that Warehouse Divisions and Management Divisions interact with, and a "purchase market" for homogeneous working capital that Supply Divisions interact with.
+	\item Run basic simulations with a single firm, mainly for the purposes of debugging and ensuring a single firm scenario can be stabilised before adding in other firms in competition and adding greater volatility to market conditions.
+\end{enumerate}
+\section{Challenges}
+\begin{enumerate}
+	\item Designing a model suited to the task has proven extremely difficult in the time available, as could be expected from the development time of EURACE that's early iterations were not of a dissimilar scale to this model. To produce a model including more accurate representations of real world markets, and refinement of division representations for improved realism would require a significant contribution from experts in relevant fields, and significantly more time than has been available to ensure correct interaction between the inevitably more complex agents that would result.
+	\item Debugging a model with as many different agents and interactions as the model I have built is extremely difficult in FLAME. Exceptions often arise in the Xparser executable and are not correctly handled, and so determining the origin is very difficult.
+	\item Debugging the model itself (where unexpected \textbf{and} undesired behaviour occurs as the result of bugs, rather than exceptions) is also made somewhat difficult by the complexity of the model. Unexpected behaviour must often be traced back through numerous interactions between numerous agents to determine the cause.
+\end{enumerate}	
+\section{What remains}
+\begin{enumerate}
+	\item Run simulations with a variety of start states with a number of firms with different structures to yield usable results about competitive scenarios.
+	\item Run simulations with different market conditions on both the demand and supply side. Add in a better way of instigating supply/demand side shocks.
+	\item Expand considerations of cost to include divisions other than Production and Marketing divisions, and to improve Marketing division cost handling.
+	\item If I have time look at improving market representations, and perhaps adding additional complexity to the production hierarchy.
+\end{enumerate}
+
+\end{document}

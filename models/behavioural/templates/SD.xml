@@ -1,0 +1,13 @@
+<xagent>
+  <name>SupplyDivision</name>
+  <firm_id>0</firm_id><!-- int (unique in global id scope), 0 <= x -->
+  <division_id>0</division_id><!-- int (unique in internal id scope), 0 <= x -->
+  <source_market_id>0</source_market_id><!-- int (references global id scope), 0 <= x -->
+  <parent_division_id>0</parent_division_id><!-- int (references internal id scope), 0 <= x -->
+  <delivery_time>0</delivery_time><!-- int, 0 <= x -->
+  <!-- == == calculated during iteration == == -->
+  <funds>0</funds><!-- double -->
+  <output_target>0</output_target><!-- int, 0 <= x -->
+  <cumulative_output>0</cumulative_output><!-- int, 0 <= x -->
+  <cumulative_costs>0</cumulative_costs><!-- double, 0 <= x -->
+</xagent>

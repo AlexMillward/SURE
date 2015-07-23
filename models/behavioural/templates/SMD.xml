@@ -1,0 +1,16 @@
+<xagent>
+  <name>SalesAndMarketingDivision</name>
+  <firm_id>0</firm_id><!-- int (unique in global id scope), 0 <= x -->
+  <division_id>0</division_id><!-- int (unique in internal id scope), 0 <= x -->
+  <factors>{}</factors><!-- cost (double), available (double) -->
+  <history>{}</history><!-- proportion_sales_change (double), factor_proportions (double[M]) -->
+  <history_size_limit>0</history_size_limit><!-- int, 0 <= x -->
+  <previous_sales>0</previous_sales><!-- int, 0 <= x -->
+  <factor_alpha>0</factor_alpha><!-- 1/value^(i) is weighting for i iterations ago in history -->
+  <factor_beta>0</factor_beta><!-- value * previous used to weight impact of specific factor -->
+  <!-- == == calculated during iteration == == -->
+  <cumulative_costs>0</cumulative_costs><!-- double, 0 <= x -->
+  <funds>0</funds><!-- double, 0 <= x -->
+  <change_in_sales>0</change_in_sales><!-- int -->
+  <proportion_sales_change>0</proportion_sales_change><!-- double -->
+</xagent>

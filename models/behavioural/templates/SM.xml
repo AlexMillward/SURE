@@ -1,0 +1,11 @@
+<xagent>
+  <name>SaleMarket</name>
+  <market_id>0</market_id><!-- int (references global id scope), 0 <= x -->
+  <participants>{}</participants><!-- firm_id (int), 0, 0, quality (double), marketing_factors(double[M]), 0, 0 -->
+  <marketing_factor_weights>{}</marketing_factor_weights><!-- double[M] --->
+  <factor_depreciation>{}</factor_depreciation><!-- double[M] -->
+  <overall_demand>0</overall_demand><!-- int -->
+  <preference_total>0</preference_total><!-- double -->
+  <!-- == == calculated during iteration == == -->
+  <marketing_factor_totals>{}</marketing_factor_totals><!-- double[M]  - TODO : fill -->
+</xagent>
