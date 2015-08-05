@@ -88,7 +88,7 @@ int SM_confirm_sale() {
         add_market_sale_confirmation_message(MARKET_ID,
           market_provision_message->firm_id,
           market_provision_message->quantity,
-          PARTICIPANTS.array[p].quantity_demanded,
+          (PARTICIPANTS.array[p].quantity_demanded / 20) - market_provision_message->quantity,
           PARTICIPANTS.array[p].price);
 
         break;
