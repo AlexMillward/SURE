@@ -276,6 +276,10 @@ int PD_produce() {
   }
 
   // Work out overall output potential and produce
+  /*
+    Wrong
+    TODO : OUTPUT TARGET ?!
+  */
   int output = fixed_capital_potential < working_capital_potential ?
     fixed_capital_potential : working_capital_potential;
   CUMULATIVE_OUTPUT += output;

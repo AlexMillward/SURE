@@ -67,7 +67,7 @@ int SM_require() {
   // Send market requirements to firms
   for (int p=0; p<PARTICIPANTS.size; p++) {
     add_market_requirement_message(MARKET_ID, PARTICIPANTS.array[p].firm_id,
-      PARTICIPANTS.array[p].quantity_demanded);
+      (PARTICIPANTS.array[p].quantity_demanded / 20) );
   }
 
   return 0;

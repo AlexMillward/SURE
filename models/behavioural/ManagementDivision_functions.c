@@ -81,6 +81,11 @@ int MD_administrate() {
     PRODUCTION_TARGET *= adjust_by;
     PRODUCTION_EXPENDITURE = 0;
 
+    // Safety check, should want to produce at least a unit
+    if (PRODUCTION_TARGET < 1) {
+      PRODUCTION_TARGET = 1;
+    }
+
     // Calculate division funding, send instruction to production, and supply divisions and adjust funds
     double division_funding;
     for (p=0; p<PRODUCTION_REPORTS.size; p++) {
